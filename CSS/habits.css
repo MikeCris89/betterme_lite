@@ -30,3 +30,7 @@
   margin: auto;
   max-width: 300px;
 }
+
+.card:hover {
+  cursor: pointer;
+}

@@ -19,16 +19,18 @@
       <div class="habit-list" id="habit-list"></div>
       <div class="modal" id="habit-modal">
         <div class="modal-content">
-          <form>
-            <h2>Add New Good Habbit</h2>
+          <form id="habit-form">
+            <h2 id="form-title">Add New Good Habbit</h2>
             <label for="title">Title:</label>
-            <input type="text" id="title" name="title" />
+            <input type="text" id="title" name="title" required />
             <br />
             <label for="frequency">Frequency</label>
-            <input type="number" id="frequency" name="frequency" />
+            <input type="number" id="frequency" name="frequency" required />
             <br />
+
+            <input type="hidden" name="id" id="id" />
             <button type="button" id="cancel-habit">Cancel</button>
-            <button type="submit">Submit</button>
+            <button type="submit" id="submit-habit">Submit</button>
           </form>
         </div>
       </div>

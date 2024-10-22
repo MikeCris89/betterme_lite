@@ -1,15 +1,18 @@
 import { fetchHabits } from "../helpers/storageHandler.js";
+import { formHandler } from "../app.js";
 
-const habitCard = (title, frequency) => {
+const habitCard = (habit) => {
   const card = document.createElement("div");
   card.classList.add("card");
-  card.onclick = () => {};
+  card.addEventListener("click", () => {
+    formHandler(habit);
+  });
 
   const habitTitle = document.createElement("h3");
-  habitTitle.textContent = title;
+  habitTitle.textContent = habit.title;
 
   const freq = document.createElement("p");
-  freq.textContent = `${frequency} per week`;
+  freq.textContent = `${habit.frequency} per week`;
   card.appendChild(habitTitle);
   card.appendChild(freq);
   return card;
@@ -21,12 +24,10 @@ export const renderHabits = () => {
   const habitContainer = document.createElement("ul");
   const habitArr = fetchHabits();
 
-  if (habitArr.length > 0) {
-    habitArr.forEach((item) => {
-      const habitItem = document.createElement("li");
-      habitItem.appendChild(habitCard(item.title, item.frequency));
-      habitContainer.appendChild(habitItem);
-    });
-    habitList.appendChild(habitContainer);
-  }
+  habitArr.forEach((habit) => {
+    const habitItem = document.createElement("li");
+    habitItem.appendChild(habitCard(habit));
+    habitContainer.appendChild(habitItem);
+  });
+  habitList.appendChild(habitContainer);
 };
