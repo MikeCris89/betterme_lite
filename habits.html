@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habits</title>
+    <link rel="stylesheet" href="./CSS/global.css" />
+    <link rel="stylesheet" href="./CSS/habits.css" />
+    <script type="module" src="./JS/app.js"></script>
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <div class="habit-title">
+        <div></div>
+        <h1>Habits</h1>
+        <button id="new-habit" class="habit-btn">New Habit</button>
+      </div>
+      <div class="habit-list" id="habit-list"></div>
+      <div class="modal" id="habit-modal">
+        <div class="modal-content">
+          <form>
+            <h2>Add New Good Habbit</h2>
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" />
+            <br />
+            <label for="frequency">Frequency</label>
+            <input type="number" id="frequency" name="frequency" />
+            <br />
+            <button type="button" id="cancel-habit">Cancel</button>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

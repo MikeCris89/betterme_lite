@@ -1,0 +1,32 @@
+.habit-title {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+}
+
+.habit-btn {
+  width: fit-content;
+  padding: 0 5px;
+  border-radius: 5px;
+}
+
+.habit-list {
+  max-width: 70%;
+  margin: auto;
+  text-align: center;
+}
+
+.habit-list ul {
+  list-style-type: none;
+}
+
+.habit-list ul li {
+  padding: 10px;
+}
+
+.card {
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 12px;
+  margin: auto;
+  max-width: 300px;
+}
