@@ -3,7 +3,7 @@
   grid-template-columns: 1fr 2fr 1fr;
 }
 
-.habit-btn {
+.btn {
   width: fit-content;
   padding: 0 5px;
   border-radius: 5px;
@@ -27,10 +27,17 @@
   border: 1px solid black;
   padding: 10px;
   border-radius: 12px;
-  margin: auto;
-  max-width: 300px;
+  width: 300px;
 }
 
 .card:hover {
+  cursor: pointer;
+}
+
+.card-selected {
+  background-color: #add8e670;
+}
+
+#clear-search:hover {
   cursor: pointer;
 }

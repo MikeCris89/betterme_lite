@@ -54,3 +54,29 @@ h1 {
   margin: 10% auto;
   border-radius: 10px;
 }
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.col {
+  flex-direction: column;
+}
+
+.spbt {
+  justify-content: space-between;
+}
+
+.cntr {
+  justify-content: center;
+  gap: 5px;
+}
+
+.cursor:hover {
+  cursor: pointer;
+}
+
+.pad1 {
+  padding: 3px;
+}

@@ -1,5 +1,15 @@
 import { fetchHabits } from "./storageHandler.js";
 
+const habitFactory = ({ title, perday, perweek }) => {
+  return {
+    title: title.value,
+    frequency: { perday: perday.value, perweek: perweek.value },
+    perday: perday.value,
+    perweek: perweek.value,
+    id: generateId(),
+  };
+};
+
 const newId = () => {
   return Date.now().toString(36) + Math.random().toString(36).substring(2, 9);
 };
@@ -11,26 +21,6 @@ const generateId = () => {
     id = newId();
   }
   return id;
-};
-
-const habitFactory = (title, frequency) => {
-  return {
-    _title: title,
-    _frequency: frequency,
-    get title() {
-      return this._title;
-    },
-    set title(newTitle) {
-      this._title = newTitle;
-    },
-    get frequency() {
-      return this._frequency;
-    },
-    set frequency(newFreq) {
-      this._frequency = newFreq;
-    },
-    id: generateId(),
-  };
 };
 
 export default habitFactory;
