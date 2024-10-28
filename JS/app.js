@@ -4,10 +4,22 @@ import {
   saveHabits,
   clearData,
   deleteHabit,
+  checkDates,
 } from "./utils/storageHandler.js";
 import renderHabits from "./UI/habits.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Check Dates and Progress Reset
+  checkDates();
+
+  // Test Date
+  const testDate = document.getElementById("test-date");
+  if (testDate)
+    testDate.addEventListener("input", () => {
+      checkDates();
+      renderHabits();
+    });
+
   // New Habit Button
   const newHabit = document.getElementById("new-habit");
   if (newHabit) newHabit.addEventListener("click", () => formHandler());
@@ -132,7 +144,7 @@ export const viewDetails = async (habit) => {
   modalBody.querySelector("#title").textContent = habit.title;
   modalBody.querySelector("#perday").textContent = habit.perday;
   modalBody.querySelector("#perweek").textContent = habit.perweek;
-
+  // Dates
   const startDate = new Date(habit.createdAt);
   modalBody.querySelector("#startdate").textContent =
     startDate.toLocaleDateString("en-US", {

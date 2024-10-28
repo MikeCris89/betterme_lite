@@ -1,4 +1,5 @@
 import renderHabits from "../UI/habits.js";
+import { thisWeekStart, today } from "./helpers.js";
 
 export const fetchHabits = () => {
   return JSON.parse(localStorage.getItem("habits")) || [];
@@ -41,4 +42,65 @@ export const checkOff = (habit) => {
   );
   saveHabits(newHabits);
   renderHabits();
+};
+
+// Check habits for dates daily / weekly
+const resetDailyProgress = (habits, thisDay) =>
+  habits.map((habit) =>
+    habit.progress.day.date !== thisDay
+      ? {
+          ...habit,
+          progress: {
+            ...habit.progress,
+            day: { date: thisDay, complete: 0 },
+          },
+        }
+      : habit
+  );
+
+const resetWeeklyProgress = (habits, thisWeek) =>
+  habits.map((habit) =>
+    habit.progress.week.date !== thisWeek
+      ? {
+          ...habit,
+          progress: {
+            ...habit.progress,
+            week: { date: thisWeek, complete: 0 },
+          },
+        }
+      : habit
+  );
+
+const setDates = (thisDay, thisWeek) => {
+  return {
+    day: thisDay,
+    week: thisWeek,
+  };
+};
+
+export const checkDates = () => {
+  let dates = JSON.parse(localStorage.getItem("dates"));
+  const thisDay = today();
+  const thisWeek = thisWeekStart();
+
+  if (!dates) {
+    dates = setDates(thisDay, thisWeek);
+    localStorage.setItem("dates", JSON.stringify(dates));
+  }
+
+  if (dates.day !== thisDay || dates.week !== thisWeek) {
+    let habits = fetchHabits();
+    if (habits.length > 0) {
+      if (dates.day !== thisDay) {
+        habits = resetDailyProgress(habits, thisDay);
+      }
+      if (dates.week !== thisWeek) {
+        habits = resetWeeklyProgress(habits, thisWeek);
+      }
+    }
+    dates = setDates(thisDay, thisWeek);
+    localStorage.setItem("dates", JSON.stringify(dates));
+    console.log(habits);
+    saveHabits(habits);
+  }
 };

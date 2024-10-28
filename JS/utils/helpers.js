@@ -6,13 +6,20 @@ export const addElement = (el = "div", classes = [], text = "") => {
 };
 
 export const thisWeekStart = () => {
-  const thisWeek = new Date();
+  const dateInput = document.getElementById("test-date").value;
+  let thisWeek = dateInput ? new Date(dateInput) : new Date();
+
   const dayOfWeek = thisWeek.getDay();
   thisWeek.setDate(thisWeek.getDate() - dayOfWeek);
   thisWeek.setHours(0, 0, 0, 0);
-  return thisWeek;
+  return thisWeek.toISOString();
 };
 
 export const today = () => {
-  return new Date(new Date().setHours(0, 0, 0, 0));
+  //return new Date(new Date().setHours(0, 0, 0, 0));
+  const dateInput = document.getElementById("test-date").value;
+  let todayDate = dateInput ? new Date(dateInput) : new Date();
+  todayDate.setHours(0, 0, 0, 0);
+
+  return todayDate.toISOString();
 };

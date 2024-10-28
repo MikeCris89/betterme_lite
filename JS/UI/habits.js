@@ -69,24 +69,6 @@ const renderHabits = () => {
     }
   }
 
-  // Check habits for date / week
-  habits = habits.map((habit) => {
-    let newHabit = { ...habit };
-    if (habit.progress.day.date !== today()) {
-      newHabit = {
-        ...newHabit,
-        progress: { ...newHabit.progress, day: { date: today(), complete: 0 } },
-      };
-    }
-    if (habit.progress.week.date !== thisWeekStart()) {
-      newHabit = {
-        ...newHabit,
-        progress: { ...newHabit, week: { date: thisWeekStart(), complete: 0 } },
-      };
-    }
-    return newHabit;
-  });
-
   // Sort habits by least daily completed
   habits = sortHabits(habits);
 
