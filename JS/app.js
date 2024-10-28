@@ -77,7 +77,7 @@ export const formHandler = async (habit) => {
   const modalBody = document.getElementById("modal-body");
   modalBody.innerHTML = "";
 
-  const formResp = await fetch("/betterme_lite/habitForm.html");
+  const formResp = await fetch("habitForm.html");
   const formHtml = await formResp.text();
 
   modalBody.insertAdjacentHTML("beforeend", formHtml);
