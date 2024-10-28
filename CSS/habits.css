@@ -41,3 +41,42 @@
 #clear-search:hover {
   cursor: pointer;
 }
+
+.habit-list-container {
+  display: grid;
+  grid-template: 1fr / 1fr 1fr 1fr;
+}
+
+.list-item:hover {
+  cursor: pointer;
+}
+
+.check-btn {
+  padding: 3px 5px;
+  border-radius: 50%;
+}
+
+.num-input {
+  width: 50px;
+}
+
+.tab {
+  padding: 5px 10px;
+  border: 1px solid black;
+  font-size: 18px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  background-color: darkgray;
+}
+
+.tab.active {
+  background-color: lightgray;
+}
+
+#tab-todo {
+  border-radius: 8px 0 0 8px;
+}
+
+#tab-complete {
+  border-radius: 0 8px 8px 0;
+}

@@ -1,98 +1,103 @@
-import { deleteHabit, fetchHabits } from "../helpers/storageHandler.js";
-import { formHandler } from "../app.js";
-import { addElement } from "../helpers/elements.js";
+import { viewDetails } from "../app.js";
+import { addElement, thisWeekStart, today } from "../utils/helpers.js";
+import { checkOff, fetchHabits } from "../utils/storageHandler.js";
 
-let activeCard = null;
+const cardElement = (habit) => {
+  const container = addElement("div", ["flex", "gap1"]);
 
-const hideBtn = () => {
-  if (activeCard) {
-    const container = activeCard.parentElement;
-    container
-      .querySelectorAll(".card-btn")
-      .forEach((btn) => (btn.style.display = "none"));
-    activeCard.classList.remove("card-selected");
-  }
-};
-
-const handleDocumentClick = (e) => {
-  const modal = document.getElementById("habit-modal");
-  if (!modal.contains(e.target)) {
-    hideBtn();
-    activeCard = null;
-    document.removeEventListener("click", handleDocumentClick);
-  }
-};
-
-const habitCard = (habit) => {
-  const container = addElement("div", ["flex", "cntr"]);
-  const editBtn = addElement("button", ["btn", "card-btn"], "edit");
-  editBtn.style.display = "none";
-  editBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    formHandler(habit);
+  // Card Content
+  const card = addElement("div", ["card"]);
+  card.addEventListener("click", () => viewDetails(habit));
+  const title = addElement("h3", ["habit-title"], habit.title);
+  const completed = addElement("p", [], "Completed:");
+  const perDay = addElement(
+    "p",
+    ["align-right"],
+    `${habit.progress.day.complete}/${habit.perday} today`
+  );
+  const perWeek = addElement(
+    "p",
+    ["align-right"],
+    `${habit.progress.week.complete}/${habit.perweek} this week`
+  );
+  // Checkmark Habit CheckOff
+  const checkmark = addElement("button", ["check-btn"]);
+  checkmark.innerHTML = "&#x2714;";
+  checkmark.addEventListener("click", () => {
+    checkOff(habit);
   });
 
-  const delBtn = addElement("button", ["btn", "card-btn"], "delete");
-  delBtn.style.backgroundColor = "red";
-  delBtn.style.color = "white";
-  delBtn.style.display = "none";
-  delBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    deleteHabit(habit?.id);
-  });
-
-  const card = addElement();
-  card.addEventListener("click", (e) => {
-    e.stopPropagation();
-
-    hideBtn();
-
-    if (activeCard !== card) {
-      document.addEventListener("click", handleDocumentClick);
-      card.classList.add("card-selected");
-      activeCard = card;
-
-      editBtn.style.display = "block";
-      delBtn.style.display = "block";
-    } else {
-      card.classList.remove("card-selected");
-      document.removeEventListener("click", handleDocumentClick);
-      activeCard = null;
-      editBtn.style.display = "none";
-      delBtn.style.display = "none";
-    }
-  });
-  const habitTitle = addElement("h3", [], habit.title);
-  const perDay = addElement("p", [], `${habit.perday} times/day`);
-  const perWeek = addElement("p", [], `${habit.perweek} days/week`);
-
-  container.appendChild(card);
-  container.appendChild(editBtn);
-  container.appendChild(delBtn);
-  card.appendChild(habitTitle);
+  card.appendChild(title);
+  card.appendChild(completed);
   card.appendChild(perDay);
   card.appendChild(perWeek);
-
+  container.appendChild(card);
+  container.appendChild(checkmark);
   return container;
 };
 
-export const renderHabits = () => {
-  const habitSearch = document.getElementById("habit-search");
+const sortHabits = (habits) => {
+  return habits.sort(
+    (a, b) => a.progress.day.complete - b.progress.day.complete
+  );
+};
 
+const renderHabits = () => {
   const habitList = document.getElementById("habit-list");
   habitList.innerHTML = "";
-  const habitContainer = document.createElement("ul");
-  let habitArr = fetchHabits();
-  if (habitSearch.value) {
-    habitArr = habitArr.filter((habit) =>
-      habit.title.includes(habitSearch.value)
-    );
+  const list = addElement("div", ["flex", "col", "gap1"]);
+  let habits = fetchHabits();
+
+  // Active Tabs / Filtering Habits
+  const todoTab = document.getElementById("tab-todo");
+  const compTab = document.getElementById("tab-complete");
+  const searchBar = document.getElementById("habit-search");
+
+  if (todoTab && compTab) {
+    if (searchBar && searchBar.value) {
+      habits = habits.filter((habit) =>
+        habit.title.toLowerCase().includes(searchBar.value.toLowerCase())
+      );
+    } else if (todoTab.classList.contains("active")) {
+      habits = habits.filter(
+        (habit) => habit.progress.day.complete < habit.perday
+      );
+    } else if (compTab.classList.contains("active")) {
+      habits = habits.filter(
+        (habit) => habit.progress.day.complete >= habit.perday
+      );
+    }
   }
 
-  habitArr.forEach((habit) => {
-    const habitItem = addElement("li");
-    habitItem.appendChild(habitCard(habit));
-    habitContainer.appendChild(habitItem);
+  // Check habits for date / week
+  habits = habits.map((habit) => {
+    let newHabit = { ...habit };
+    if (habit.progress.day.date !== today()) {
+      newHabit = {
+        ...newHabit,
+        progress: { ...newHabit.progress, day: { date: today(), complete: 0 } },
+      };
+    }
+    if (habit.progress.week.date !== thisWeekStart()) {
+      newHabit = {
+        ...newHabit,
+        progress: { ...newHabit, week: { date: thisWeekStart(), complete: 0 } },
+      };
+    }
+    return newHabit;
   });
-  habitList.appendChild(habitContainer);
+
+  // Sort habits by least daily completed
+  habits = sortHabits(habits);
+
+  // Create habit card and append to DOM
+  habits.forEach((habit) => {
+    const habitItem = addElement();
+    habitItem.appendChild(cardElement(habit));
+    list.appendChild(habitItem);
+  });
+
+  habitList.appendChild(list);
 };
+
+export default renderHabits;

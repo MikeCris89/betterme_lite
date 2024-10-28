@@ -1,43 +1,25 @@
-import habitFactory from "./helpers/habitFactory.js";
+import habitFactory from "./utils/habitFactory.js";
 import {
   fetchHabits,
   saveHabits,
   clearData,
-} from "./helpers/storageHandler.js";
-import { renderHabits } from "./UI/habits.js";
-import renderTodo from "./UI/todo.js";
-
-const fetchNav = () => {
-  fetch("../navbar.html")
-    .then((resp) => resp.text())
-    .then((data) => {
-      document.querySelector("header").innerHTML = data;
-    })
-    .then(() => {
-      const clear = document.querySelector("#clear-data");
-      if (clear) clear.addEventListener("click", clearData);
-    });
-};
-
-fetchNav();
+  deleteHabit,
+} from "./utils/storageHandler.js";
+import renderHabits from "./UI/habits.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // New Habit Button
   const newHabit = document.getElementById("new-habit");
   if (newHabit) newHabit.addEventListener("click", () => formHandler());
 
-  const cancelHabit = document.getElementById("cancel-habit");
-  if (cancelHabit) cancelHabit.addEventListener("click", closeModal);
+  // Cancel Close Buttons for Modals
+  const cancelFormHabit = document.getElementById("cancel-habit");
+  if (cancelFormHabit) cancelFormHabit.addEventListener("click", closeModal);
 
-  const closeBtn = document.getElementById("close-modal");
+  const closeBtn = document.getElementById("close-modal-x");
   if (closeBtn) closeBtn.addEventListener("click", closeModal);
 
-  const submit = document.getElementById("habit-form");
-  if (submit) submit.addEventListener("submit", handleSubmit);
-
-  if (document.getElementById("todo-list")) renderTodo();
-
-  if (document.getElementById("habit-list")) renderHabits();
-
+  // Sesarch Bar
   const habitSearch = document.getElementById("habit-search");
   const clearSearch = document.getElementById("clear-search");
   if (clearSearch)
@@ -45,68 +27,167 @@ document.addEventListener("DOMContentLoaded", () => {
       habitSearch.value = "";
       renderHabits();
     });
-
   if (habitSearch) {
     habitSearch.addEventListener("input", () => {
       renderHabits();
     });
   }
+
+  // Tabs
+  const todoTab = document.getElementById("tab-todo");
+  const compTab = document.getElementById("tab-complete");
+  todoTab.classList.add("active");
+  if (todoTab) {
+    todoTab.addEventListener("click", () => {
+      todoTab.classList.add("active");
+      compTab.classList.remove("active");
+      renderHabits();
+    });
+  }
+
+  if (compTab) {
+    compTab.addEventListener("click", () => {
+      compTab.classList.add("active");
+      todoTab.classList.remove("active");
+      renderHabits();
+    });
+  }
+
+  // Render Habit List
+  if (document.getElementById("habit-list")) renderHabits();
+
+  // Clear all data
+  const clear = document.getElementById("clear-data");
+  if (clear) clear.addEventListener("click", clearData);
 });
 
-export const formHandler = (habit) => {
-  const form = document.querySelector("#habit-form");
+export const formHandler = async (habit) => {
+  const modalBody = document.getElementById("modal-body");
+  modalBody.innerHTML = "";
 
-  form.querySelector("h2").innerHTML = habit?.id
+  const formResp = await fetch("../habitForm.html");
+  const formHtml = await formResp.text();
+
+  modalBody.insertAdjacentHTML("beforeend", formHtml);
+
+  const modal = document.getElementById("habit-modal");
+  const form = document.getElementById("habit-form");
+  modal.style.display = "block";
+
+  // Header
+  modal.querySelector("#modal-header h2").textContent = habit?.id
     ? "Edit Habit"
     : "Add New Habit";
-  form.querySelector("#submit-habit").innerHTML = habit?.id ? "Save" : "Submit";
-  form.elements.title.value = habit?.title || "";
 
+  // Footer
+  const submitBtn = modal.querySelector("#modal-footer #submit-btn");
+  submitBtn.style.display = "inline";
+  submitBtn.textContent = habit?.id ? "Save" : "Submit";
+  form.addEventListener("submit", handleSubmit);
+
+  const cancelBtn = modal.querySelector("#modal-footer #close-modal-btn");
+  cancelBtn.addEventListener("click", () => {
+    habit?.id ? viewDetails(habit) : closeModal();
+  });
+
+  //Body
+  form.elements.title.value = habit?.title || "";
   form.elements.perday.value = habit?.perday || "";
   form.elements.perweek.value = habit?.perweek || "";
   form.elements.id.value = habit?.id || "";
-
-  document.getElementById("habit-modal").style.display = "block";
   form.elements.title.focus();
 };
 
 export const closeModal = () => {
   document.getElementById("habit-modal").style.display = "none";
+  const cancelBtn = document.getElementById("cancel-modal-btn");
+  if (cancelBtn) cancelBtn.removeEventListener("click", closeModal);
+};
+
+export const viewDetails = async (habit) => {
+  const modal = document.getElementById("habit-modal");
+  modal.style.display = "block";
+  const resp = await fetch("./habitDetails.html");
+  const detailsView = await resp.text();
+  const cancelBtn = modal.querySelector("#modal-footer #close-modal-btn");
+
+  // Modal Header
+  modal.querySelector("#modal-header #modal-title").textContent = "Details";
+
+  // Modal Body
+  const modalBody = modal.querySelector("#modal-body");
+  modalBody.innerHTML = "";
+  modalBody.insertAdjacentHTML("beforeend", detailsView);
+  // Edit button
+  modalBody.querySelector("#edit-btn").addEventListener("click", () => {
+    cancelBtn.removeEventListener("click", closeModal);
+    formHandler(habit);
+  });
+  // Delete button
+  modalBody.querySelector("#del-btn").addEventListener("click", () => {
+    deleteHabit(habit.id);
+    closeModal();
+  });
+  // Body Content
+  modalBody.querySelector("#title").textContent = habit.title;
+  modalBody.querySelector("#perday").textContent = habit.perday;
+  modalBody.querySelector("#perweek").textContent = habit.perweek;
+
+  const startDate = new Date(habit.createdAt);
+  modalBody.querySelector("#startdate").textContent =
+    startDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  const weekDate = new Date(habit.progress.week.date);
+  modalBody.querySelector("#thisweek").textContent =
+    weekDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+  // Modal Footer
+
+  cancelBtn.innerHTML = "cancel";
+  cancelBtn.addEventListener("click", closeModal);
+  modal.querySelector("#modal-footer #submit-btn").style.display = "none";
 };
 
 export const handleSubmit = (e) => {
   e.preventDefault();
 
-  //const { title, perday, perweek, id } = e.target.elements;
-
   let habits = fetchHabits();
 
-  const habit = e.target.elements;
-  const isEdit = !!habit.id.value;
+  const habitEl = e.target.elements;
+  const isEdit = !!habitEl.id.value;
+
+  let habit = {
+    title: habitEl.title.value,
+    perday: habitEl.perday.value,
+    perweek: habitEl.perweek.value,
+  };
 
   if (isEdit) {
-    //const index = habits.findIndex((el) => el.id === habit.id.value);
-
     habits = habits.map((el) =>
-      el.id === habit.id.value
+      el.id === habitEl.id.value
         ? {
             ...el,
-            title: habit.title.value,
-            perday: habit.perday.value,
-            perweek: habit.perweek.value,
+            ...habit,
           }
         : el
     );
   } else {
-    const newHabit = habitFactory(habit);
-    habits.push(newHabit);
+    habit = habitFactory(habitEl);
+    habits.push(habit);
   }
 
   //save new habits array to local storage
   saveHabits(habits);
 
   if (isEdit) {
-    closeModal();
+    viewDetails(habit);
   } else {
     e.target.reset();
     document.querySelector("#habit-form").elements.title.focus();

@@ -9,10 +9,61 @@
     <script type="module" src="./JS/app.js"></script>
   </head>
   <body>
-    <header></header>
+    <!-- Navbar -->
+    <header>
+      <nav>
+        <h2>BetterMe Lite</h2>
+        <ul>
+          <li><a href="#">Settings</a></li>
+        </ul>
+        <button id="clear-data">Clear Data</button>
+      </nav>
+    </header>
     <main>
-      <h1>Dashboard</h1>
-      <div id="todo-list"></div>
+      <!-- Page Title and New Button-->
+      <div class="habit-title">
+        <div></div>
+        <h1>Habits</h1>
+        <button id="new-habit" class="btn">New Habit</button>
+      </div>
+
+      <!-- Habit List -->
+      <div class="flex col">
+        <!-- Search Bar -->
+        <div>
+          <input
+            type="text"
+            id="habit-search"
+            name="habit-search"
+            placeholder="search habits"
+          />
+          <label for="habit-search" id="clear-search">&times;</label>
+        </div>
+        <!-- TABS -->
+        <div class="flex">
+          <button class="tab" id="tab-todo">To-Do</button>
+          <button class="tab" id="tab-complete">Complete</button>
+        </div>
+        <!-- List -->
+        <div id="habit-list"></div>
+      </div>
+
+      <!-- Form/Details Modal-->
+      <div class="modal-class" id="habit-modal">
+        <div class="modal-content">
+          <div class="flex spbt" id="modal-header">
+            <h2 id="modal-title"></h2>
+            <h3 class="cursor pad1 close-modal" id="close-modal-x">&times;</h3>
+          </div>
+          <div id="modal-body"></div>
+          <div class="align-right" id="modal-footer">
+            <button class="close-modal" id="close-modal-btn">Close</button>
+            <button type="submit" form="habit-form" id="submit-btn">
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
     </main>
   </body>
 </html>

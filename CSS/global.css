@@ -16,12 +16,16 @@ nav {
 nav ul {
   display: flex;
   justify-content: space-between;
-  list-style-type: none;
+
   gap: 10px;
 }
 
 nav button {
   width: fit-content;
+}
+
+ul {
+  list-style-type: none;
 }
 
 a {
@@ -37,7 +41,7 @@ h1 {
   text-align: center;
 }
 
-.modal {
+.modal-class {
   display: none;
   position: fixed;
   top: 0;
@@ -64,6 +68,10 @@ h1 {
   flex-direction: column;
 }
 
+.gap1 {
+  gap: 5px;
+}
+
 .spbt {
   justify-content: space-between;
 }
@@ -79,4 +87,8 @@ h1 {
 
 .pad1 {
   padding: 3px;
+}
+
+.align-right {
+  text-align: right;
 }

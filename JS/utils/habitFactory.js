@@ -1,3 +1,4 @@
+import { thisWeekStart, today } from "./helpers.js";
 import { fetchHabits } from "./storageHandler.js";
 
 const habitFactory = ({ title, perday, perweek }) => {
@@ -6,6 +7,15 @@ const habitFactory = ({ title, perday, perweek }) => {
     frequency: { perday: perday.value, perweek: perweek.value },
     perday: perday.value,
     perweek: perweek.value,
+    progress: {
+      day: {
+        date: today(),
+        complete: 0,
+      },
+      week: { date: thisWeekStart(), complete: 0 },
+      total: 0,
+    },
+    createdAt: new Date(),
     id: generateId(),
   };
 };
