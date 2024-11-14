@@ -5,8 +5,8 @@
 
 .btn {
   width: fit-content;
-  padding: 0 5px;
-  border-radius: 5px;
+  padding: 2px 3px;
+  border-radius: 8px;
 }
 
 .habit-list {
@@ -24,10 +24,11 @@
 }
 
 .card {
-  border: 1px solid black;
+  border: 1px solid var(--text-color);
   padding: 10px;
   border-radius: 12px;
   width: 300px;
+  background-color: var(--card-bg-color);
 }
 
 .card:hover {
@@ -66,11 +67,11 @@
   font-size: 18px;
   margin-top: 5px;
   margin-bottom: 10px;
-  background-color: darkgray;
+  background-color: lightgray;
 }
 
 .tab.active {
-  background-color: lightgray;
+  background-color: darkgray;
 }
 
 #tab-todo {
@@ -79,4 +80,33 @@
 
 #tab-complete {
   border-radius: 0 8px 8px 0;
+}
+
+.search-container {
+  margin-bottom: 10px;
+}
+
+.search-bar {
+  border: 1px solid black;
+  padding: 2px 5px;
+  border-radius: 10px;
+  background-color: #fff;
+}
+.search-bar:focus-within {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+#habit-search {
+  font-size: 18px;
+  border: none;
+  outline: none;
+}
+
+#del-btn {
+  padding: 5px;
+}
+
+#title {
+  padding-right: 20px;
 }

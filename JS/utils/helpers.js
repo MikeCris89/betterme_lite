@@ -16,7 +16,6 @@ export const thisWeekStart = () => {
 };
 
 export const today = () => {
-  //return new Date(new Date().setHours(0, 0, 0, 0));
   const dateInput = document.getElementById("test-date").value;
   let todayDate = dateInput ? new Date(dateInput) : new Date();
   todayDate.setHours(0, 0, 0, 0);

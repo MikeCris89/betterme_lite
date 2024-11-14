@@ -3,10 +3,9 @@ import { fetchHabits } from "./storageHandler.js";
 
 const habitFactory = ({ title, perday, perweek }) => {
   return {
-    title: title.value,
-    frequency: { perday: perday.value, perweek: perweek.value },
-    perday: perday.value,
-    perweek: perweek.value,
+    title,
+    perday,
+    perweek,
     progress: {
       day: {
         date: today(),

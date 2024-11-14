@@ -8,8 +8,7 @@ const cardElement = (habit) => {
   // Card Content
   const card = addElement("div", ["card"]);
   card.addEventListener("click", () => viewDetails(habit));
-  const title = addElement("h3", ["habit-title"], habit.title);
-  const completed = addElement("p", [], "Completed:");
+  const title = addElement("h3", [], habit.title);
   const perDay = addElement(
     "p",
     ["align-right"],
@@ -28,7 +27,6 @@ const cardElement = (habit) => {
   });
 
   card.appendChild(title);
-  card.appendChild(completed);
   card.appendChild(perDay);
   card.appendChild(perWeek);
   container.appendChild(card);
@@ -60,11 +58,15 @@ const renderHabits = () => {
       );
     } else if (todoTab.classList.contains("active")) {
       habits = habits.filter(
-        (habit) => habit.progress.day.complete < habit.perday
+        (habit) =>
+          habit.progress.week.complete < habit.perweek &&
+          habit.progress.day.complete < habit.perday
       );
     } else if (compTab.classList.contains("active")) {
       habits = habits.filter(
-        (habit) => habit.progress.day.complete >= habit.perday
+        (habit) =>
+          habit.progress.day.complete >= habit.perday ||
+          habit.progress.week.complete >= habit.perweek
       );
     }
   }

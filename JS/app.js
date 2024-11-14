@@ -20,6 +20,25 @@ document.addEventListener("DOMContentLoaded", () => {
       renderHabits();
     });
 
+  // Settings Modal
+  const settIcon = document.getElementById("sett-icon");
+  const sett = document.getElementById("settings");
+  if (sett && settIcon) {
+    settIcon.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (
+        getComputedStyle(sett).display === "none" ||
+        sett.style.display === "none"
+      ) {
+        showSettings();
+      } else {
+        hideSettings();
+      }
+    });
+  }
+  const closeSett = document.getElementById("close-sett-modal");
+  if (closeSett) closeSett.addEventListener("click", hideSettings);
+
   // New Habit Button
   const newHabit = document.getElementById("new-habit");
   if (newHabit) newHabit.addEventListener("click", () => formHandler());
@@ -35,14 +54,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const habitSearch = document.getElementById("habit-search");
   const clearSearch = document.getElementById("clear-search");
   if (clearSearch)
-    clearSearch.addEventListener("click", () => {
-      habitSearch.value = "";
-      renderHabits();
-    });
+    if (habitSearch.value === "") clearSearch.style.display = "none";
+  clearSearch.addEventListener("click", () => {
+    habitSearch.value = "";
+    renderHabits();
+    clearSearch.style.display = "none";
+  });
   if (habitSearch) {
     habitSearch.addEventListener("input", () => {
       renderHabits();
+      if (habitSearch.value === "") {
+        clearSearch.style.display = "none";
+      } else {
+        clearSearch.style.display = "inline";
+      }
     });
+
+    // Theme
+    const themeBtn = document.getElementById("theme-btn");
+    if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
+
+    const theme = localStorage.getItem("theme") || "light";
+    document.documentElement.setAttribute("data-theme", theme);
   }
 
   // Tabs
@@ -73,11 +106,43 @@ document.addEventListener("DOMContentLoaded", () => {
   if (clear) clear.addEventListener("click", clearData);
 });
 
+const toggleTheme = () => {
+  const currTheme = document.documentElement.getAttribute("data-theme");
+  const newTheme = currTheme === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", newTheme);
+
+  localStorage.setItem("theme", newTheme);
+};
+
+const settClickOutside = (e) => {
+  const sett = document.getElementById("settings");
+  if (!sett.contains(e.target)) {
+    hideSettings();
+  }
+};
+
+const showSettings = () => {
+  const settIcon = document.getElementById("sett-icon");
+  const sett = document.getElementById("settings");
+  settIcon.classList.add("fa-spin");
+  setTimeout(() => settIcon.classList.remove("fa-spin"), 1000);
+  sett.style.display = "block";
+  document.addEventListener("click", settClickOutside);
+};
+
+const hideSettings = () => {
+  const settIcon = document.getElementById("sett-icon");
+  const sett = document.getElementById("settings");
+  settIcon.classList.remove("fa-spin");
+  sett.style.display = "none";
+  document.removeEventListener("click", settClickOutside);
+};
+
 export const formHandler = async (habit) => {
   const modalBody = document.getElementById("modal-body");
   modalBody.innerHTML = "";
 
-  const formResp = await fetch("habitForm.html");
+  const formResp = await fetch("./habitForm.html");
   const formHtml = await formResp.text();
 
   modalBody.insertAdjacentHTML("beforeend", formHtml);
@@ -87,7 +152,7 @@ export const formHandler = async (habit) => {
   modal.style.display = "block";
 
   // Header
-  modal.querySelector("#modal-header h2").textContent = habit?.id
+  modal.querySelector("#modal-header #modal-title").textContent = habit?.id
     ? "Edit Habit"
     : "Add New Habit";
 
@@ -152,6 +217,7 @@ export const viewDetails = async (habit) => {
       month: "long",
       day: "numeric",
     });
+
   const weekDate = new Date(habit.progress.week.date);
   modalBody.querySelector("#thisweek").textContent =
     weekDate.toLocaleDateString("en-US", {
@@ -161,8 +227,7 @@ export const viewDetails = async (habit) => {
     });
 
   // Modal Footer
-
-  cancelBtn.innerHTML = "cancel";
+  cancelBtn.innerHTML = "Cancel";
   cancelBtn.addEventListener("click", closeModal);
   modal.querySelector("#modal-footer #submit-btn").style.display = "none";
 };
@@ -191,15 +256,15 @@ export const handleSubmit = (e) => {
         : el
     );
   } else {
-    habit = habitFactory(habitEl);
-    habits.push(habit);
+    const newHabit = habitFactory(habit);
+    habits.push(newHabit);
   }
 
   //save new habits array to local storage
   saveHabits(habits);
 
   if (isEdit) {
-    viewDetails(habit);
+    viewDetails(habits.find((habit) => habit.id === habitEl.id.value));
   } else {
     e.target.reset();
     document.querySelector("#habit-form").elements.title.focus();
