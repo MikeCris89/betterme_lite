@@ -3,34 +3,32 @@ import { addElement, thisWeekStart, today } from "../utils/helpers.js";
 import { checkOff, fetchHabits } from "../utils/storageHandler.js";
 
 const cardElement = (habit) => {
-  const container = addElement("div", ["flex", "gap1"]);
+  // get template and clone
+  const template = document.getElementById("habit-card-template");
+  const container = template.content.cloneNode(true);
 
-  // Card Content
-  const card = addElement("div", ["card"]);
+  // card
+  const card = container.querySelector(".card");
   card.addEventListener("click", () => viewDetails(habit));
-  const title = addElement("h3", [], habit.title);
-  const perDay = addElement(
-    "p",
-    ["align-right"],
-    `${habit.progress.day.complete}/${habit.perday} today`
-  );
-  const perWeek = addElement(
-    "p",
-    ["align-right"],
-    `${habit.progress.week.complete}/${habit.perweek} this week`
-  );
-  // Checkmark Habit CheckOff
-  const checkmark = addElement("button", ["check-btn"]);
-  checkmark.innerHTML = "&#x2714;";
+
+  //content
+  container.querySelector(".habit-title").textContent = habit.title;
+
+  const perDay = container.querySelector(".habit-per-day");
+  perDay.textContent = `${habit.progress.day.complete} / ${habit.perday}`;
+
+  const progressBar = container.querySelector(".progress-bar");
+  const progressValue =
+    (habit.progress.week.complete / (habit.perweek * habit.perday)) * 100;
+  const blend = Math.min(100, progressValue + 7);
+  progressBar.style.background = `linear-gradient(to right, limegreen max(${progressValue}%, 1%), white ${blend}%)`;
+  progressBar.style.borderColor = "green";
+
+  // checkmark
+  const checkmark = container.querySelector(".fa-check");
   checkmark.addEventListener("click", () => {
     checkOff(habit);
   });
-
-  card.appendChild(title);
-  card.appendChild(perDay);
-  card.appendChild(perWeek);
-  container.appendChild(card);
-  container.appendChild(checkmark);
   return container;
 };
 

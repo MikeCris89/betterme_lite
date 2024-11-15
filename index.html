@@ -35,7 +35,7 @@
       </div>
 
       <!-- Page Title and New Button-->
-      <div class="habit-title">
+      <div class="page-title">
         <div></div>
         <h1>Habits</h1>
         <button id="new-habit" class="btn">New Habit</button>
@@ -89,5 +89,19 @@
         </div>
       </div>
     </main>
+
+    <!-- TEMPLATES -->
+    <template id="habit-card-template">
+      <div class="flex gap2">
+        <div class="card">
+          <div class="flex spbt">
+            <h3 class="habit-title"></h3>
+            <p class="align-right habit-per-day"></p>
+          </div>
+          <div class="progress-bar"><i>weekly progress</i></div>
+        </div>
+        <i class="fa-solid fa-check"></i>
+      </div>
+    </template>
   </body>
 </html>
