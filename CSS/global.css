@@ -1,7 +1,7 @@
 /* Base Theme Variables */
 :root {
   --bg-color: #ffffff;
-  --text-color: #000000;
+  --text-color: #333;
   --primary-color: #3498db;
   --secondary-color: #2ecc71;
   --button-bg-color: #3498db;
@@ -42,15 +42,16 @@ html {
 }
 
 body {
+  background-color: var(--bg-color);
   font-family: Arial, sans-serif;
   font-size: 1rem; /* 16px */
-  line-height: 1.6;
-  color: #333;
+  line-height: 1.5;
+  color: var(--text-color);
   margin: 0;
   padding: 16px;
+  transition: var(--theme-transition);
 }
 
-/* Mobile Headings */
 h1 {
   font-size: 1.5rem; /* 24px */
   margin-bottom: 0.5em;
@@ -81,13 +82,13 @@ h6 {
   margin-bottom: 0.5em;
 }
 
-/* Paragraph */
 p {
   /* font-size: 1.25rem;
   margin-bottom: 0.875em; */
 
   font-size: 1rem;
   margin-bottom: 1em;
+  color: var(--text-color);
 }
 
 /* Desktop Headings */
@@ -106,12 +107,6 @@ p {
 }
 
 /* Global Styles */
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  font-family: Arial, sans-serif;
-  transition: var(--theme-transition);
-}
 
 h1,
 h2 {
@@ -119,16 +114,12 @@ h2 {
   text-align: center;
 }
 
-p {
-  color: var(--text-color);
-}
-
 nav {
   display: flex;
   justify-content: space-between;
   padding: 10px 20px;
   align-items: center;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--text-color);
 }
 
 nav ul {
