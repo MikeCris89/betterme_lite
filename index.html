@@ -38,7 +38,6 @@
       <div class="page-title">
         <div></div>
         <h1>Habits</h1>
-        <button id="new-habit" class="btn">New Habit</button>
       </div>
 
       <!-- Habit List -->
@@ -60,12 +59,35 @@
           </div>
         </div>
         <!-- TABS -->
-        <div class="flex">
-          <button class="tab" id="tab-todo">To-Do</button>
-          <button class="tab" id="tab-complete">Complete</button>
+        <div class="flex spbt gap2">
+          <div class="flex">
+            <button class="tab" id="tab-todo">To-Do</button>
+            <button class="tab" id="tab-complete">Complete</button>
+          </div>
+          <button id="new-habit" class="btn">+add</button>
         </div>
         <!-- List -->
-        <div id="habit-list"></div>
+        <div class="list-container">
+          <div>
+            <h3>Stats</h3>
+            <div>
+              <p>today</p>
+              <div class="progress-bar stats" id="stats-today">
+                <i>daily progress</i>
+              </div>
+              <p>this week</p>
+              <div class="progress-bar stats" id="stats-week">
+                <i>weekly progress</i>
+              </div>
+              <p>this month</p>
+              <div class="progress-bar stats" id="stats-month">
+                <i>monthly progress</i>
+              </div>
+            </div>
+          </div>
+          <div id="habit-list"></div>
+          <div></div>
+        </div>
       </div>
 
       <!-- Form/Details Modal-->

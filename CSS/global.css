@@ -91,6 +91,12 @@ p {
   color: var(--text-color);
 }
 
+button {
+  font-size: 1rem;
+  padding: 3px 5px;
+  border-radius: 5px;
+}
+
 /* Desktop Headings */
 @media (min-width: 769px) {
   h1 {
@@ -194,8 +200,6 @@ input::placeholder {
   background-color: var(--modal-bg-color);
   border: 1px solid var(--text-color);
   padding: 20px;
-  width: 95%;
-  margin: auto;
   height: 200px;
   border-radius: 10px;
   z-index: 1000;
