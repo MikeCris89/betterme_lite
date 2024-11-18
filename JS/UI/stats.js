@@ -1,4 +1,4 @@
-import { getProgressColor, weeklyStats } from '../utils/helpers.js';
+import { weeklyStats } from '../utils/helpers.js';
 import { fetchHabits } from '../utils/storageHandler.js';
 
 let ignore = false;
