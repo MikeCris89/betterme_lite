@@ -14,34 +14,18 @@
 	</head>
 	<body>
 		<!-- Navbar -->
-		<header>
-			<nav>
-				<h3>BetterMe Lite</h3>
-				<i class="fa-solid fa-gear fa-lg" id="sett-icon"></i>
-			</nav>
-		</header>
-		<main>
-			<!-- Settings Menu-->
-			<div class="modal-settings" id="settings">
-				<div class="flex spbt">
-					<h3>Settings</h3>
-					<i class="fa-solid fa-xmark" id="close-sett-modal"></i>
+		<div class="flex col-rev main-container">
+			<header>
+				<nav>
+					<h3>BetterMe Lite</h3>
+					<i class="fa-solid fa-gear fa-lg" id="sett-icon"></i>
+				</nav>
+			</header>
+			<main>
+				<!-- Page Title-->
+				<div class="page-title">
+					<h1>Habits</h1>
 				</div>
-				<div class="sett-menu">
-					<button id="theme-btn" class="theme-toggle-button">Theme</button>
-					<input type="datetime-local" id="test-date" />
-					<button id="clear-data">Clear Data</button>
-				</div>
-			</div>
-
-			<!-- Page Title and New Button-->
-			<div class="page-title">
-				<div></div>
-				<h1>Habits</h1>
-			</div>
-
-			<!-- Habit List -->
-			<div class="flex col">
 				<!-- Search Bar -->
 				<div class="search-container flex alc">
 					<i
@@ -58,76 +42,84 @@
 						<i class="fa-solid fa-magnifying-glass" id="mag-glass"></i>
 					</div>
 				</div>
-				<!-- TABS -->
-				<div class="flex spbt gap2">
-					<div class="flex">
-						<button class="tab" id="tab-todo">To-Do</button>
-						<button class="tab" id="tab-complete">Complete</button>
-					</div>
-					<button id="new-habit" class="btn">+add</button>
-				</div>
-				<!-- List -->
+				<!-- Habits List and Stats-->
 				<div class="list-container">
-					<!-- Stats Col -->
-					<div style="width: 100%; margin: auto">
-						<div style="width: 100%; margin: auto">
-							<!-- <div
-								class="progress-bar stats"
-								id="stats-week"
-								style="width: 100%; margin: auto"
-							>
-								<i>weekly progress</i>
+					<!-- Habit Col-->
+					<div class="flex col habit-col">
+						<!-- TABS -->
+						<div class="flex spbt gap2">
+							<div class="flex">
+								<button class="tab" id="tab-todo">To-Do</button>
+								<button class="tab" id="tab-complete">Complete</button>
 							</div>
-							<p>this week</p> -->
-							<div id="progress-circle"></div>
+							<button id="new-habit" class="btn">+add</button>
+						</div>
+						<!-- Habit List Col -->
+						<div id="habit-list"></div>
+					</div>
+
+					<!-- Stats Col -->
+					<div class="stats-col">
+						<div id="progress-circle"></div>
+					</div>
+				</div>
+
+				<!-- Form/Details Modal-->
+				<div class="modal-class" id="habit-modal">
+					<div class="modal-content">
+						<div class="flex spbt" id="modal-header">
+							<h4 id="modal-title"></h4>
+							<i
+								class="fa-solid fa-xmark fa-lg cursor pad1 close-modal"
+								id="close-modal-x"
+							></i>
+						</div>
+						<div id="modal-body"></div>
+						<div class="align-right" id="modal-footer">
+							<button class="btn" id="close-modal-btn">Close</button>
+							<button class="btn" type="submit" form="habit-form" id="submit-btn">
+								Submit
+							</button>
 						</div>
 					</div>
-					<!-- Habit List Col -->
-					<div id="habit-list"></div>
-					<!-- Empty Col -->
-					<div></div>
 				</div>
-			</div>
-
-			<!-- Form/Details Modal-->
-			<div class="modal-class" id="habit-modal">
-				<div class="modal-content">
-					<div class="flex spbt" id="modal-header">
-						<h4 id="modal-title"></h4>
-						<i
-							class="fa-solid fa-xmark fa-lg cursor pad1 close-modal"
-							id="close-modal-x"
-						></i>
+				<!-- Settings Menu-->
+				<div class="modal-settings" id="settings">
+					<div class="flex spbt">
+						<h3>Settings</h3>
+						<i class="fa-solid fa-xmark" id="close-sett-modal"></i>
 					</div>
-					<div id="modal-body"></div>
-					<div class="align-right" id="modal-footer">
-						<button class="btn" id="close-modal-btn">Close</button>
-						<button class="btn" type="submit" form="habit-form" id="submit-btn">
-							Submit
-						</button>
+					<div class="sett-menu">
+						<button id="theme-btn" class="theme-toggle-button">Theme</button>
+						<input type="datetime-local" id="test-date" />
+						<button id="clear-data">Clear Data</button>
 					</div>
 				</div>
-			</div>
-		</main>
-
+			</main>
+		</div>
 		<!-- TEMPLATES -->
 		<template id="habit-card-template">
-			<div class="flex gap2 nowrap card-container">
+			<div class="flex spbt gap2 nowrap card-container">
 				<div class="card">
 					<div class="flex spbt">
 						<h3 class="habit-title"></h3>
 						<p class="align-right habit-per-day"></p>
 					</div>
 
-					<div class="progress-bar"><i>weekly progress</i></div>
+					<div class="progress-bar"></div>
 				</div>
-				<i class="fa-solid fa-check"></i>
+				<div class="checkmark"><i class="fa-solid fa-check"></i></div>
 			</div>
 		</template>
 		<template id="progress-circle-template">
 			<div class="circle">
 				<div class="progress"></div>
 				<div class="inner-circle"><p></p></div>
+			</div>
+		</template>
+		<template>
+			<div class="half-circle">
+				<div class="progress-half-circle"></div>
 			</div>
 		</template>
 	</body>

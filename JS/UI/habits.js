@@ -54,7 +54,7 @@ const renderHabits = async () => {
 	let habits = await fetchHabits();
 	//if (renderId !== thisId) return;
 	console.log('Rendering habits.');
-	const list = addElement('div', ['flex', 'col', 'gap1']);
+	const list = addElement('div', ['flex', 'col', 'gap1', 'habit-cont']);
 
 	console.log('HABITS RESP: ', habits);
 	renderStats();

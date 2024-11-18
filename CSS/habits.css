@@ -1,13 +1,67 @@
+.main-container {
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+}
+
 .page-title {
-	display: grid;
-	grid-template-columns: 1fr 2fr 1fr;
+	flex: 0 0 auto;
+}
+
+.search-container {
+	flex: 0 0 auto;
+	margin: 5px auto;
+}
+
+.search-bar {
+	border: 1px solid black;
+	padding: 2px 5px;
+	border-radius: 10px;
+	background-color: #fff;
+}
+.search-bar:focus-within {
+	border-color: #007bff;
+	box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+#habit-search {
+	border: none;
+	outline: none;
+}
+
+.list-container {
+	flex: 1;
+	height: 100%;
+	display: flex;
+	flex-direction: column-reverse;
+	flex-wrap: nowrap;
+	overflow: hidden;
+}
+
+.stats-col {
+	height: 100%;
+	width: 100%;
+	flex: 0;
+}
+
+.habit-col {
+	width: 100%;
+	flex: 1;
+	overflow: auto;
+	max-width: 500px;
+	justify-content: start;
+	height: 100%;
 }
 
 #habit-list {
+	overflow: auto;
 	width: 100%;
-	margin: auto;
-	text-align: center;
-	max-width: 500px;
+	flex: 1;
+	height: 100%;
+}
+
+.habit-cont {
+	width: 100%;
 }
 
 #habit-list ul {
@@ -20,11 +74,11 @@
 
 .card-container {
 	width: 100%;
-	max-width: 300px;
+	max-width: 600px;
+	border-bottom: 1px solid var(--text-color);
 }
 
 .card {
-	border: 1px solid var(--text-color);
 	padding: 10px;
 	border-radius: 12px;
 	width: 100%;
@@ -58,6 +112,22 @@
 	border-radius: 50%;
 }
 
+.fa-check {
+	padding: 20px 30px;
+	border: 2px solid #00800050;
+	border-radius: 10px;
+	color: green;
+}
+
+.fa-check:hover {
+	cursor: pointer;
+}
+
+.fa-check:active {
+	background: green;
+	color: white;
+}
+
 .num-input {
 	width: 50px;
 }
@@ -83,27 +153,6 @@
 	border-radius: 0 8px 8px 0;
 }
 
-.search-container {
-	margin-bottom: 10px;
-}
-
-.search-bar {
-	border: 1px solid black;
-	padding: 2px 5px;
-	border-radius: 10px;
-	background-color: #fff;
-}
-.search-bar:focus-within {
-	border-color: #007bff;
-	box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
-}
-
-#habit-search {
-	/* font-size: 18px; */
-	border: none;
-	outline: none;
-}
-
 #del-btn {
 	padding: 5px;
 }
@@ -114,9 +163,11 @@
 
 .progress-bar {
 	width: 95%;
+	height: 10px;
 	border-radius: 10px;
-	padding: 0 5px;
 	border: 2px solid green;
+	color: #00000080;
+	font-size: 12px;
 	/*  */
 }
 .progress-bar i {
@@ -124,19 +175,10 @@
 	font-size: 12px;
 }
 
-.list-container {
-	width: 100%;
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-	text-align: center;
-	justify-items: center;
-	align-items: center;
-}
-
 /**/
 .circle {
 	position: relative;
-	width: clamp(50px, 40%, 100px); /* Diameter of the circle */
+	width: clamp(50px, 85px, 150px);
 	aspect-ratio: 1/1;
 	border-radius: 50%; /* Makes the div circular */
 	background: conic-gradient(
@@ -175,3 +217,43 @@
 	margin: auto;
 	font-size: clamp(16px, 18px, 22px);
 }
+
+.half-circle {
+	position: relative;
+	width: 200px; /* Width of the semicircle */
+	height: 100px; /* Half the height */
+	background: conic-gradient(#4caf50 calc(var(--progress, 0) * 1%), #e0e0e0 0);
+	border-radius: 100px 100px 0 0; /* Top corners rounded for semicircle */
+	overflow: hidden; /* Clip the lower half */
+}
+
+.progress-half-circle {
+	position: absolute;
+	top: 10%;
+	left: 10%;
+	width: 80%;
+	height: 100%;
+	background: var(--card-bg-color); /* Use the same background as the parent */
+	border-radius: 100px 100px 0 0; /* Top corners rounded for semicircle */
+	/* clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0% 50%); */
+}
+
+@media (min-width: 769px) {
+	.list-container {
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+	}
+
+	.main-container {
+		flex-direction: column;
+	}
+}
+
+/* .list-container,
+main,
+header {
+	border: 1px solid red;
+}
+#habit-list {
+	border: 4px solid blue;
+} */
