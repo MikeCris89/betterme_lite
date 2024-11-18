@@ -68,24 +68,23 @@
 				</div>
 				<!-- List -->
 				<div class="list-container">
-					<div>
-						<h3>Stats</h3>
-						<div>
-							<p>today</p>
-							<div class="progress-bar stats" id="stats-today">
-								<i>daily progress</i>
-							</div>
-							<p>this week</p>
-							<div class="progress-bar stats" id="stats-week">
+					<!-- Stats Col -->
+					<div style="width: 100%; margin: auto">
+						<div style="width: 100%; margin: auto">
+							<!-- <div
+								class="progress-bar stats"
+								id="stats-week"
+								style="width: 100%; margin: auto"
+							>
 								<i>weekly progress</i>
 							</div>
-							<p>this month</p>
-							<div class="progress-bar stats" id="stats-month">
-								<i>monthly progress</i>
-							</div>
+							<p>this week</p> -->
+							<div id="progress-circle"></div>
 						</div>
 					</div>
+					<!-- Habit List Col -->
 					<div id="habit-list"></div>
+					<!-- Empty Col -->
 					<div></div>
 				</div>
 			</div>
@@ -113,15 +112,22 @@
 
 		<!-- TEMPLATES -->
 		<template id="habit-card-template">
-			<div class="flex gap2">
+			<div class="flex gap2 nowrap card-container">
 				<div class="card">
 					<div class="flex spbt">
 						<h3 class="habit-title"></h3>
 						<p class="align-right habit-per-day"></p>
 					</div>
+
 					<div class="progress-bar"><i>weekly progress</i></div>
 				</div>
 				<i class="fa-solid fa-check"></i>
+			</div>
+		</template>
+		<template id="progress-circle-template">
+			<div class="circle">
+				<div class="progress"></div>
+				<div class="inner-circle"><p></p></div>
 			</div>
 		</template>
 	</body>

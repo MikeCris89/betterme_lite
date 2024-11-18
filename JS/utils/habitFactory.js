@@ -1,16 +1,13 @@
-import {
-	daysInMonth,
-	freqPerMonth,
-	thisMonthStart,
-	thisWeekStart,
-	today,
-} from './helpers.js';
+import { thisWeekStart, today } from './helpers.js';
 import { fetchHabits } from './storageHandler.js';
 
-const habitFactory = ({ title, perDay, daysPerWeek }) => {
+const habitFactory = async ({ title, perDay, daysPerWeek }) => {
+	// const perday = Number(perDay);
+	// const dpw = Number(daysPerWeek);
+
 	return {
 		title,
-		progress: {
+		freq: {
 			day: {
 				per: perDay,
 				date: today(),
@@ -22,15 +19,9 @@ const habitFactory = ({ title, perDay, daysPerWeek }) => {
 				date: thisWeekStart(),
 				complete: 0,
 			},
-			month: {
-				per: freqPerMonth(perDay, daysPerWeek),
-				date: thisMonthStart(),
-				complete: 0,
-			},
-			allTime: { total: 0, complete: 0 },
 		},
 		createdAt: new Date(),
-		id: generateId(),
+		id: await generateId(),
 	};
 };
 
@@ -38,9 +29,9 @@ const newId = () => {
 	return Date.now().toString(36) + Math.random().toString(36).substring(2, 9);
 };
 
-const generateId = () => {
+const generateId = async () => {
 	let id = newId();
-	const existing = fetchHabits();
+	const existing = await fetchHabits();
 	while (existing.some((el) => el.id === id)) {
 		id = newId();
 	}

@@ -15,25 +15,32 @@ export const thisWeekStart = () => {
 	return thisWeek.toISOString();
 };
 
-export const thisMonthStart = () => {
-	const dateInput = document.getElementById('test-date').value;
-	const now = dateInput ? new Date(dateInput) : new Date();
+// export const thisMonthStart = () => {
+// 	const dateInput = document.getElementById('test-date').value;
+// 	const now = dateInput ? new Date(dateInput) : new Date();
 
-	const start = new Date(now.getFullYear(), now.getMonth(), 1);
+// 	const start = new Date(now.getFullYear(), now.getMonth(), 1);
 
-	return start;
-};
+// 	return start;
+// };
 
-export const daysInMonth = () => {
-	const dateInput = document.getElementById('test-date').value;
-	const now = dateInput ? new Date(dateInput) : new Date();
+// export const daysInMonth = () => {
+// 	const dateInput = document.getElementById('test-date').value;
+// 	const now = dateInput ? new Date(dateInput) : new Date();
+// 	const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+// 	return days;
+// };
 
-	const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-	return days;
-};
+export const weeklyStats = (habits) => {
+	let complete = 0;
+	let total = 0;
 
-export const freqPerMonth = (perDay, daysPerWeek) => {
-	return Math.floor((daysInMonth() / 7) * daysPerWeek) * perDay;
+	habits.forEach((habit) => {
+		complete += habit.freq.week.complete;
+		total += habit.freq.week.per;
+	});
+
+	return { complete, total };
 };
 
 export const today = () => {

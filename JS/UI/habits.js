@@ -1,11 +1,10 @@
 import { viewDetails } from '../app.js';
-import {
-	addElement,
-	getProgressColor,
-	thisWeekStart,
-	today,
-} from '../utils/helpers.js';
+import { addElement, getProgressColor } from '../utils/helpers.js';
 import { checkOff, fetchHabits } from '../utils/storageHandler.js';
+import renderStats from './stats.js';
+
+//let renderId = 0;
+let ignore = false;
 
 const cardElement = (habit) => {
 	// get template and clone
@@ -20,15 +19,17 @@ const cardElement = (habit) => {
 	container.querySelector('.habit-title').textContent = habit.title;
 
 	const perDay = container.querySelector('.habit-per-day');
-	perDay.textContent = `${habit.progress.day.complete} / ${habit.progress.day.per}`;
+	perDay.textContent = `${habit.freq.day.complete} / ${habit.freq.day.per}`;
 
 	const progressBar = container.querySelector('.progress-bar');
-	const progressValue =
-		(habit.progress.week.complete /
-			(habit.progress.week.per * habit.progress.day.per)) *
-		100;
+	const progressValue = Math.min(
+		100,
+		(habit.freq.week.complete / habit.freq.week.per) * 100
+	);
 	progressBar.style.background = getProgressColor(progressValue, true);
 	progressBar.style.borderColor = 'green';
+
+	//document.documentElement.style.setProperty('--progress', progressValue);
 
 	// checkmark
 	const checkmark = container.querySelector('.fa-check');
@@ -39,16 +40,24 @@ const cardElement = (habit) => {
 };
 
 const sortHabits = (habits) => {
-	return habits.sort(
-		(a, b) => a.progress.day.complete - b.progress.day.complete
-	);
+	return habits.sort((a, b) => a.freq.day.complete - b.freq.day.complete);
 };
 
-const renderHabits = () => {
+const renderHabits = async () => {
+	if (ignore) return;
+	ignore = true;
+	// const thisId = renderId + 1;
+	// renderId = thisId;
 	const habitList = document.getElementById('habit-list');
 	habitList.innerHTML = '';
+
+	let habits = await fetchHabits();
+	//if (renderId !== thisId) return;
+	console.log('Rendering habits.');
 	const list = addElement('div', ['flex', 'col', 'gap1']);
-	let habits = fetchHabits();
+
+	console.log('HABITS RESP: ', habits);
+	renderStats();
 
 	// Active Tabs / Filtering Habits
 	const todoTab = document.getElementById('tab-todo');
@@ -63,14 +72,14 @@ const renderHabits = () => {
 		} else if (todoTab.classList.contains('active')) {
 			habits = habits.filter(
 				(habit) =>
-					habit.progress.week.complete < habit.progress.week.per &&
-					habit.progress.day.complete < habit.progress.day.per
+					habit.freq.week.complete < habit.freq.week.per &&
+					habit.freq.day.complete < habit.freq.day.per
 			);
 		} else if (compTab.classList.contains('active')) {
 			habits = habits.filter(
 				(habit) =>
-					habit.progress.day.complete >= habit.progress.day.per ||
-					habit.progress.week.complete >= habit.progress.week.per
+					habit.freq.day.complete >= habit.freq.day.per ||
+					habit.freq.week.complete >= habit.freq.week.per
 			);
 		}
 	}
@@ -80,12 +89,12 @@ const renderHabits = () => {
 
 	// Create habit card and append to DOM
 	habits.forEach((habit) => {
-		const habitItem = addElement();
-		habitItem.appendChild(cardElement(habit));
-		list.appendChild(habitItem);
+		list.appendChild(cardElement(habit));
 	});
 
 	habitList.appendChild(list);
+	//renderId = 0;
+	ignore = false;
 };
 
 export default renderHabits;

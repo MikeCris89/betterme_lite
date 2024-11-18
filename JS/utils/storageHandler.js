@@ -1,71 +1,89 @@
 import renderHabits from '../UI/habits.js';
+import { clearAllData, getData, saveData } from './api.js';
 import { thisWeekStart, today } from './helpers.js';
 
-let dataCache = null;
+let allHabits = null;
 
-export const fetchHabits = () => {
-	if (!dataCache) {
-		console.log('Fetching from local storage.');
-		const data = JSON.parse(localStorage.getItem('habits')) || [];
-		dataCache = data;
-		return data;
+export const fetchHabits = async () => {
+	if (allHabits) return allHabits;
+
+	console.log('Fetching from local storage.');
+	try {
+		allHabits = getData('habits').then((resp) => {
+			const data = resp || [];
+			if (data.length > 0) {
+				//const newData = data.map((el) => ({...el, el.freq.day.per : Number(el.freq.day.per)}))
+			}
+			allHabits = data;
+			return data;
+		});
+		return allHabits;
+	} catch (e) {
+		console.error('Fetch Habits Error:', e);
+		return [];
 	}
-
-	return dataCache;
 };
 
-export const saveHabits = (habitArr) => {
-	dataCache = habitArr;
-	localStorage.setItem('habits', JSON.stringify(habitArr));
+export const saveHabits = async (habitArr) => {
+	try {
+		allHabits = habitArr;
+		await saveData('habits', habitArr);
+		console.log('Habits saved.');
+	} catch (e) {
+		console.error('Error saving habits. Error: ', e.message);
+	}
 };
 
-export const clearData = () => {
-	console.log('data cleared');
-	localStorage.clear();
-	dataCache = null;
-	renderHabits();
+export const clearData = async () => {
+	try {
+		allHabits = null;
+		renderHabits();
+
+		await clearAllData();
+		console.log('data cleared');
+	} catch (e) {
+		console.error('Error clearing data. Error: ', e.message);
+	}
 };
 
-export const deleteHabit = (id) => {
-	const habits = fetchHabits();
+export const deleteHabit = async (id) => {
+	const habits = await fetchHabits();
 	const newHabits = habits.filter((habit) => habit.id !== id);
-	saveHabits(newHabits);
+	await saveHabits(newHabits);
+	console.log('Habit Deleted.');
 	renderHabits();
 };
 
-// TODO
-// adjust the monthly and alltime totals
-export const checkOff = (habit) => {
-	const habits = fetchHabits();
+export const checkOff = async (habit) => {
+	const habits = await fetchHabits();
 	const newHabits = habits.map((el) =>
 		el.id === habit.id
 			? {
 					...el,
-					progress: {
-						...el.progress,
-						day: { ...el.progress.day, complete: el.progress.day.complete + 1 },
+					freq: {
+						...el.freq,
+						day: { ...el.freq.day, complete: el.freq.day.complete + 1 },
 						week: {
-							...el.progress.week,
-							complete: el.progress.week.complete + 1,
+							...el.freq.week,
+							complete: el.freq.week.complete + 1,
 						},
-						total: el.progress.total + 1,
 					},
 			  }
 			: el
 	);
-	saveHabits(newHabits);
+	await saveHabits(newHabits);
 	renderHabits();
 };
 
 // Check habits for dates daily / weekly
 const resetDailyProgress = (habits, thisDay) =>
 	habits.map((habit) =>
-		habit.progress.day.date !== thisDay
+		habit.freq.day.date !== thisDay
 			? {
 					...habit,
-					progress: {
-						...habit.progress,
-						day: { date: thisDay, complete: 0 },
+					freq: {
+						...habit.freq,
+						day: { ...habit.freq.day, date: thisDay, complete: 0 },
 					},
 			  }
 			: habit
@@ -73,12 +91,12 @@ const resetDailyProgress = (habits, thisDay) =>
 
 const resetWeeklyProgress = (habits, thisWeek) =>
 	habits.map((habit) =>
-		habit.progress.week.date !== thisWeek
+		habit.freq.week.date !== thisWeek
 			? {
 					...habit,
-					progress: {
-						...habit.progress,
-						week: { date: thisWeek, complete: 0 },
+					freq: {
+						...habit.freq,
+						week: { ...habit.freq.week, date: thisWeek, complete: 0 },
 					},
 			  }
 			: habit
@@ -91,29 +109,36 @@ const setDates = (thisDay, thisWeek) => {
 	};
 };
 
-export const checkDates = () => {
-	let dates = JSON.parse(localStorage.getItem('dates'));
-	const thisDay = today();
-	const thisWeek = thisWeekStart();
+export const checkDates = async () => {
+	console.log('Checking dates');
+	try {
+		let dates = await getData('dates');
+		const thisDay = today();
+		const thisWeek = thisWeekStart();
 
-	if (!dates) {
-		dates = setDates(thisDay, thisWeek);
-		localStorage.setItem('dates', JSON.stringify(dates));
-	}
-
-	if (dates.day !== thisDay || dates.week !== thisWeek) {
-		let habits = fetchHabits();
-		if (habits.length > 0) {
-			if (dates.day !== thisDay) {
-				habits = resetDailyProgress(habits, thisDay);
-			}
-			if (dates.week !== thisWeek) {
-				habits = resetWeeklyProgress(habits, thisWeek);
-			}
+		if (!dates) {
+			dates = setDates(thisDay, thisWeek);
+			localStorage.setItem('dates', JSON.stringify(dates));
 		}
-		dates = setDates(thisDay, thisWeek);
-		localStorage.setItem('dates', JSON.stringify(dates));
-		console.log(habits);
-		saveHabits(habits);
+
+		if (dates.day !== thisDay || dates.week !== thisWeek) {
+			fetchHabits().then(async (resp) => {
+				if (resp.length > 0) {
+					if (dates.day !== thisDay) {
+						resp = resetDailyProgress(resp, thisDay);
+					}
+					if (dates.week !== thisWeek) {
+						resp = resetWeeklyProgress(resp, thisWeek);
+					}
+				}
+				dates = setDates(thisDay, thisWeek);
+				saveData('dates', dates);
+				console.log('Dates Modified');
+				await saveHabits(resp);
+				renderHabits();
+			});
+		}
+	} catch (e) {
+		console.error('Error checking dates. Error: ', e.message);
 	}
 };

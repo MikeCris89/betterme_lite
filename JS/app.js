@@ -8,111 +8,119 @@ import {
 } from './utils/storageHandler.js';
 import renderHabits from './UI/habits.js';
 import './UI/stats.js';
-import { daysInMonth } from './utils/helpers.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+const initializeApp = async () => {
+	// Fetch Habits
+	fetchHabits();
+
 	// Check Dates and Progress Reset
 	checkDates();
 
-	// Test Date
-	const testDate = document.getElementById('test-date');
-	if (testDate)
-		testDate.addEventListener('input', () => {
-			checkDates();
+	// Render UI and Event Listeners
+	renderUI();
+};
+
+const renderUI = () => {
+	document.addEventListener('DOMContentLoaded', () => {
+		// Test Date
+		const testDate = document.getElementById('test-date');
+		if (testDate)
+			testDate.addEventListener('input', () => {
+				checkDates();
+				renderHabits();
+			});
+
+		// Settings Modal
+		const settIcon = document.getElementById('sett-icon');
+		const sett = document.getElementById('settings');
+		if (sett && settIcon) {
+			settIcon.addEventListener('click', (e) => {
+				e.stopPropagation();
+				if (
+					getComputedStyle(sett).display === 'none' ||
+					sett.style.display === 'none'
+				) {
+					showSettings();
+				} else {
+					hideSettings();
+				}
+			});
+		}
+		const closeSett = document.getElementById('close-sett-modal');
+		if (closeSett) closeSett.addEventListener('click', hideSettings);
+
+		// New Habit Button
+		const newHabit = document.getElementById('new-habit');
+		if (newHabit) newHabit.addEventListener('click', () => formHandler());
+
+		// Cancel Close Buttons for Modals
+		const cancelFormHabit = document.getElementById('cancel-habit');
+		if (cancelFormHabit) cancelFormHabit.addEventListener('click', closeModal);
+
+		const closeBtn = document.getElementById('close-modal-x');
+		if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+		// Sesarch Bar
+		const habitSearch = document.getElementById('habit-search');
+		const clearSearch = document.getElementById('clear-search');
+		if (clearSearch)
+			if (habitSearch.value === '') clearSearch.style.display = 'none';
+		clearSearch.addEventListener('click', () => {
+			habitSearch.value = '';
 			renderHabits();
+			clearSearch.style.display = 'none';
 		});
+		if (habitSearch) {
+			habitSearch.addEventListener('input', () => {
+				renderHabits();
+				if (habitSearch.value === '') {
+					clearSearch.style.display = 'none';
+				} else {
+					clearSearch.style.display = 'inline';
+				}
+			});
 
-	// Settings Modal
-	const settIcon = document.getElementById('sett-icon');
-	const sett = document.getElementById('settings');
-	if (sett && settIcon) {
-		settIcon.addEventListener('click', (e) => {
-			e.stopPropagation();
-			if (
-				getComputedStyle(sett).display === 'none' ||
-				sett.style.display === 'none'
-			) {
-				showSettings();
-			} else {
-				hideSettings();
-			}
-		});
-	}
-	const closeSett = document.getElementById('close-sett-modal');
-	if (closeSett) closeSett.addEventListener('click', hideSettings);
+			// Theme
+			const themeBtn = document.getElementById('theme-btn');
+			if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
-	// New Habit Button
-	const newHabit = document.getElementById('new-habit');
-	if (newHabit) newHabit.addEventListener('click', () => formHandler());
+			const theme = localStorage.getItem('theme') || 'light';
+			document.documentElement.setAttribute('data-theme', theme);
+		}
 
-	// Cancel Close Buttons for Modals
-	const cancelFormHabit = document.getElementById('cancel-habit');
-	if (cancelFormHabit) cancelFormHabit.addEventListener('click', closeModal);
+		// Tabs
+		const todoTab = document.getElementById('tab-todo');
+		const compTab = document.getElementById('tab-complete');
+		todoTab.classList.add('active');
+		if (todoTab) {
+			todoTab.addEventListener('click', () => {
+				todoTab.classList.add('active');
+				compTab.classList.remove('active');
+				renderHabits();
+			});
+		}
 
-	const closeBtn = document.getElementById('close-modal-x');
-	if (closeBtn) closeBtn.addEventListener('click', closeModal);
+		if (compTab) {
+			compTab.addEventListener('click', () => {
+				compTab.classList.add('active');
+				todoTab.classList.remove('active');
+				renderHabits();
+			});
+		}
 
-	// Sesarch Bar
-	const habitSearch = document.getElementById('habit-search');
-	const clearSearch = document.getElementById('clear-search');
-	if (clearSearch)
-		if (habitSearch.value === '') clearSearch.style.display = 'none';
-	clearSearch.addEventListener('click', () => {
-		habitSearch.value = '';
-		renderHabits();
-		clearSearch.style.display = 'none';
+		// Render Habit List
+		if (document.getElementById('habit-list')) renderHabits();
+
+		// Clear all data
+		const clear = document.getElementById('clear-data');
+		if (clear) clear.addEventListener('click', clearData);
 	});
-	if (habitSearch) {
-		habitSearch.addEventListener('input', () => {
-			renderHabits();
-			if (habitSearch.value === '') {
-				clearSearch.style.display = 'none';
-			} else {
-				clearSearch.style.display = 'inline';
-			}
-		});
-
-		// Theme
-		const themeBtn = document.getElementById('theme-btn');
-		if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
-
-		const theme = localStorage.getItem('theme') || 'light';
-		document.documentElement.setAttribute('data-theme', theme);
-	}
-
-	// Tabs
-	const todoTab = document.getElementById('tab-todo');
-	const compTab = document.getElementById('tab-complete');
-	todoTab.classList.add('active');
-	if (todoTab) {
-		todoTab.addEventListener('click', () => {
-			todoTab.classList.add('active');
-			compTab.classList.remove('active');
-			renderHabits();
-		});
-	}
-
-	if (compTab) {
-		compTab.addEventListener('click', () => {
-			compTab.classList.add('active');
-			todoTab.classList.remove('active');
-			renderHabits();
-		});
-	}
-
-	// Render Habit List
-	if (document.getElementById('habit-list')) renderHabits();
-
-	// Clear all data
-	const clear = document.getElementById('clear-data');
-	if (clear) clear.addEventListener('click', clearData);
-});
+};
 
 const toggleTheme = () => {
 	const currTheme = document.documentElement.getAttribute('data-theme');
 	const newTheme = currTheme === 'dark' ? 'light' : 'dark';
 	document.documentElement.setAttribute('data-theme', newTheme);
-
 	localStorage.setItem('theme', newTheme);
 };
 
@@ -171,8 +179,8 @@ export const formHandler = async (habit) => {
 
 	//Body
 	form.elements.title.value = habit?.title || '';
-	form.elements.perday.value = habit?.progress.day.per || '';
-	form.elements.perweek.value = habit?.progress.week.daysPer || '';
+	form.elements.perday.value = habit?.freq.day.per || '';
+	form.elements.perweek.value = habit?.freq.week.daysPer || '';
 	form.elements.id.value = habit?.id || '';
 	form.elements.title.focus();
 };
@@ -209,8 +217,8 @@ export const viewDetails = async (habit) => {
 	});
 	// Body Content
 	modalBody.querySelector('#title').textContent = habit.title;
-	modalBody.querySelector('#perday').textContent = habit.progress.day.per;
-	modalBody.querySelector('#perweek').textContent = habit.progress.week.daysPer;
+	modalBody.querySelector('#perday').textContent = habit.freq.day.per;
+	modalBody.querySelector('#perweek').textContent = habit.freq.week.daysPer;
 	// Dates
 	const startDate = new Date(habit.createdAt);
 	modalBody.querySelector('#startdate').textContent =
@@ -220,13 +228,15 @@ export const viewDetails = async (habit) => {
 			day: 'numeric',
 		});
 
-	const weekDate = new Date(habit.progress.week.date);
-	modalBody.querySelector('#thisweek').textContent =
-		weekDate.toLocaleDateString('en-US', {
+	const weekDate = new Date(habit.freq.week.date);
+	modalBody.querySelector('#thisweek').textContent = weekDate.toLocaleDateString(
+		'en-US',
+		{
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric',
-		});
+		}
+	);
 
 	// Modal Footer
 	cancelBtn.innerHTML = 'Cancel';
@@ -234,61 +244,59 @@ export const viewDetails = async (habit) => {
 	modal.querySelector('#modal-footer #submit-btn').style.display = 'none';
 };
 
-export const handleSubmit = (e) => {
+export const handleSubmit = async (e) => {
 	e.preventDefault();
 
-	let habits = fetchHabits();
+	let habits = await fetchHabits();
 
 	const habitEl = e.target.elements;
 	const isEdit = !!habitEl.id.value;
 
-	let habit = {
+	let newHabit = {
 		title: habitEl.title.value,
-		perDay: habitEl.perday.value,
-		daysPerWeek: habitEl.perweek.value,
+		perDay: Number(habitEl.perday.value),
+		daysPerWeek: Number(habitEl.perweek.value),
 	};
 
-	// TODO
-	// adjust monthly values and alltime
+	// Edit and update habits
 	if (isEdit) {
-		const perWeek = habit.perDay * habit.daysPerWeek;
-		const perMonth = (daysInMonth() / 7) * perWeek;
+		const perWeek = newHabit.perDay * newHabit.daysPerWeek;
 		habits = habits.map((el) =>
 			el.id === habitEl.id.value
 				? {
 						...el,
-						title: habit.title,
-						progress: {
-							...el.progress,
-							month: {
-								...el.progress.month,
-								per: perMonth,
-								week: {
-									...el.progress.week,
-									per: perWeek,
-									daysPer: habit.daysPerWeek,
-								},
+						title: newHabit.title,
+						freq: {
+							...el.freq,
+							day: { ...el.freq.day, per: newHabit.perDay },
+							week: {
+								...el.freq.week,
+								per: perWeek,
+								daysPer: newHabit.daysPerWeek,
 							},
 						},
 				  }
 				: el
 		);
 	} else {
-		const newHabit = habitFactory(habit);
-		habits.push(newHabit);
+		// New Habits
+		console.log('New Habit: ', newHabit);
+		const newHabitObj = await habitFactory(newHabit);
+		console.log('Habit Obj: ', newHabitObj);
+		habits.push(newHabitObj);
 	}
 
 	//save new habits array to local storage
-	saveHabits(habits);
+	await saveHabits(habits);
 
 	if (isEdit) {
 		viewDetails(habits.find((habit) => habit.id === habitEl.id.value));
 	} else {
-		// e.target.reset();
-		// document.querySelector("#habit-form").elements.title.focus();
 		closeModal();
 	}
 
-	//re render the list of good habits
+	//re render the list of habits
 	renderHabits();
 };
+
+initializeApp();
