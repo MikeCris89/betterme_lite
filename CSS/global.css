@@ -136,8 +136,6 @@ h2 {
 	text-align: center;
 }
 
-header {
-}
 nav {
 	display: flex;
 	justify-content: space-between;
@@ -197,13 +195,15 @@ input::placeholder {
 	background-color: #00000050;
 	width: 100%;
 	height: 100%;
+	justify-content: center;
 }
 
 .modal-content {
 	background-color: var(--modal-bg-color);
 	padding: 20px;
+	height: clamp(50%, fit-content, 95%);
 	width: clamp(50%, 600px, 95%);
-	margin: 10% auto;
+	margin: auto;
 	border-radius: 10px;
 	transition: var(--theme-transition);
 }

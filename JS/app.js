@@ -22,40 +22,37 @@ const initializeApp = async () => {
 
 const renderUI = () => {
 	document.addEventListener('DOMContentLoaded', () => {
-		// Test Date
-		const testDate = document.getElementById('test-date');
-		if (testDate)
-			testDate.addEventListener('input', () => {
-				checkDates();
-				renderHabits();
-			});
-
 		// Settings Modal
 		const settIcon = document.getElementById('sett-icon');
-		const sett = document.getElementById('settings');
-		if (sett && settIcon) {
-			settIcon.addEventListener('click', (e) => {
-				e.stopPropagation();
-				if (
-					getComputedStyle(sett).display === 'none' ||
-					sett.style.display === 'none'
-				) {
-					showSettings();
-				} else {
-					hideSettings();
-				}
+		if (settIcon) {
+			settIcon.addEventListener('click', () => {
+				openSettings();
 			});
 		}
-		const closeSett = document.getElementById('close-sett-modal');
-		if (closeSett) closeSett.addEventListener('click', hideSettings);
+		// const sett = document.getElementById('settings');
+		// if (sett && settIcon) {
+		// 	settIcon.addEventListener('click', (e) => {
+		// 		e.stopPropagation();
+		// 		if (
+		// 			getComputedStyle(sett).display === 'none' ||
+		// 			sett.style.display === 'none'
+		// 		) {
+		// 			showSettings();
+		// 		} else {
+		// 			hideSettings();
+		// 		}
+		// 	});
+		// }
+		// const closeSett = document.getElementById('close-sett-modal');
+		// if (closeSett) closeSett.addEventListener('click', hideSettings);
 
 		// New Habit Button
 		const newHabit = document.getElementById('new-habit');
 		if (newHabit) newHabit.addEventListener('click', () => formHandler());
 
-		// Cancel Close Buttons for Modals
-		const cancelFormHabit = document.getElementById('cancel-habit');
-		if (cancelFormHabit) cancelFormHabit.addEventListener('click', closeModal);
+		// // Cancel Close Buttons for Modals
+		// const cancelFormHabit = document.getElementById('close-modal-btn');
+		// if (cancelFormHabit) cancelFormHabit.addEventListener('click', closeModal);
 
 		const closeBtn = document.getElementById('close-modal-x');
 		if (closeBtn) closeBtn.addEventListener('click', closeModal);
@@ -79,13 +76,6 @@ const renderUI = () => {
 					clearSearch.style.display = 'inline';
 				}
 			});
-
-			// Theme
-			const themeBtn = document.getElementById('theme-btn');
-			if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
-
-			const theme = localStorage.getItem('theme') || 'light';
-			document.documentElement.setAttribute('data-theme', theme);
 		}
 
 		// Tabs
@@ -110,10 +100,6 @@ const renderUI = () => {
 
 		// Render Habit List
 		if (document.getElementById('habit-list')) renderHabits();
-
-		// Clear all data
-		const clear = document.getElementById('clear-data');
-		if (clear) clear.addEventListener('click', clearData);
 	});
 };
 
@@ -157,10 +143,9 @@ export const formHandler = async (habit) => {
 
 	modalBody.insertAdjacentHTML('beforeend', formHtml);
 
-	const modal = document.getElementById('habit-modal');
+	const modal = document.getElementById('modal');
 	const form = document.getElementById('habit-form');
-	modal.style.display = 'block';
-
+	modal.style.display = 'flex';
 	// Header
 	modal.querySelector('#modal-header #modal-title').textContent = habit?.id
 		? 'Edit Habit'
@@ -183,16 +168,22 @@ export const formHandler = async (habit) => {
 	form.elements.perweek.value = habit?.freq.week.daysPer || '';
 	form.elements.id.value = habit?.id || '';
 	form.elements.title.focus();
+
+	//openModal();
 };
 
 export const closeModal = () => {
-	document.getElementById('habit-modal').style.display = 'none';
+	document.getElementById('modal').style.display = 'none';
 	const cancelBtn = document.getElementById('cancel-modal-btn');
 	if (cancelBtn) cancelBtn.removeEventListener('click', closeModal);
 };
 
+const openModal = () => {
+	document.getElementById('modal').style.display = 'flex';
+};
+
 export const viewDetails = async (habit) => {
-	const modal = document.getElementById('habit-modal');
+	const modal = document.getElementById('modal');
 	modal.style.display = 'block';
 	const resp = await fetch('./habitDetails.html');
 	const detailsView = await resp.text();
@@ -297,6 +288,44 @@ export const handleSubmit = async (e) => {
 
 	//re render the list of habits
 	renderHabits();
+};
+
+export const openSettings = () => {
+	document.getElementById('modal-title').textContent = 'Settings';
+	const modalBody = document.getElementById('modal-body');
+	modalBody.innerHTML = `<div class="sett-menu">
+					<button id="theme-btn" class="theme-toggle-button">Theme</button>
+					<input type="datetime-local" id="test-date" />
+					<button id="clear-data">Clear Data</button>
+				</div>`;
+
+	// Test Date
+	const testDate = document.getElementById('test-date');
+	if (testDate)
+		testDate.addEventListener('input', () => {
+			checkDates();
+			renderHabits();
+		});
+
+	//submit btn
+	document.getElementById('submit-btn').style.display = 'none';
+
+	// Theme
+	const themeBtn = document.getElementById('theme-btn');
+	if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+
+	const theme = localStorage.getItem('theme') || 'light';
+	document.documentElement.setAttribute('data-theme', theme);
+
+	// Clear all data
+	const clear = document.getElementById('clear-data');
+	if (clear) clear.addEventListener('click', clearData);
+
+	openModal();
+
+	//Cancel Button
+	const cancelBtn = document.getElementById('close-modal-btn');
+	cancelBtn.addEventListener('click', closeModal);
 };
 
 initializeApp();

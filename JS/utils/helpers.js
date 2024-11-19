@@ -6,8 +6,9 @@ export const addElement = (el = 'div', classes = [], text = '') => {
 };
 
 export const thisWeekStart = () => {
-	const dateInput = document.getElementById('test-date').value;
-	let thisWeek = dateInput ? new Date(dateInput) : new Date();
+	const dateInput = document.getElementById('test-date');
+	let thisWeek =
+		dateInput && dateInput.value ? new Date(dateInput.value) : new Date();
 
 	const dayOfWeek = thisWeek.getDay();
 	thisWeek.setDate(thisWeek.getDate() - dayOfWeek);
@@ -44,8 +45,9 @@ export const weeklyStats = (habits) => {
 };
 
 export const today = () => {
-	const dateInput = document.getElementById('test-date').value;
-	let todayDate = dateInput ? new Date(dateInput) : new Date();
+	const dateInput = document.getElementById('test-date');
+	let todayDate =
+		dateInput && dateInput.value ? new Date(dateInput.value) : new Date();
 	todayDate.setHours(0, 0, 0, 0);
 
 	return todayDate.toISOString();
