@@ -1,4 +1,4 @@
-import { viewDetails } from '../app.js';
+import { openModal, viewDetails } from '../app.js';
 import { addElement, getProgressColor } from '../utils/helpers.js';
 import { checkOff, fetchHabits } from '../utils/storageHandler.js';
 import renderStats from './stats.js';
@@ -13,7 +13,10 @@ const cardElement = (habit) => {
 
 	// card
 	const card = container.querySelector('.card');
-	card.addEventListener('click', () => viewDetails(habit));
+	card.addEventListener('click', () => {
+		viewDetails(habit);
+		//openModal();
+	});
 
 	//content
 	container.querySelector('.habit-title').textContent = habit.title;

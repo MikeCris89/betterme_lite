@@ -1,3 +1,5 @@
+@use 'global';
+
 .main-container {
 	height: 100%;
 	width: 100%;
@@ -78,14 +80,15 @@
 	max-width: 600px;
 	border-bottom: 1px solid var(--text-color);
 	background-color: var(--card-bg-color);
+	border-radius: 12px;
 }
 
 .card {
 	padding: 10px;
 	border-radius: 12px;
 	width: 100%;
-
 	max-width: clamp(100px, 250px, 300px);
+	//background-color: var(--card-bg-color);
 }
 
 .card:hover {
@@ -109,16 +112,18 @@
 	cursor: pointer;
 }
 
-.check-btn {
-	padding: 3px 5px;
-	border-radius: 50%;
-}
+// .check-btn {
+// 	padding: 3px 5px;
+// 	border-radius: 50%;
+// 	//background: var(--bg-color);
+// }
 
 .fa-check {
 	padding: 20px 30px;
 	border: 2px solid #00800050;
 	border-radius: 10px;
 	color: green;
+	background: var(--bg-color);
 }
 
 .fa-check:hover {

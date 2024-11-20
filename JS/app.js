@@ -29,33 +29,14 @@ const renderUI = () => {
 				openSettings();
 			});
 		}
-		// const sett = document.getElementById('settings');
-		// if (sett && settIcon) {
-		// 	settIcon.addEventListener('click', (e) => {
-		// 		e.stopPropagation();
-		// 		if (
-		// 			getComputedStyle(sett).display === 'none' ||
-		// 			sett.style.display === 'none'
-		// 		) {
-		// 			showSettings();
-		// 		} else {
-		// 			hideSettings();
-		// 		}
-		// 	});
-		// }
-		// const closeSett = document.getElementById('close-sett-modal');
-		// if (closeSett) closeSett.addEventListener('click', hideSettings);
 
 		// New Habit Button
 		const newHabit = document.getElementById('new-habit');
-		if (newHabit) newHabit.addEventListener('click', () => formHandler());
-
-		// // Cancel Close Buttons for Modals
-		// const cancelFormHabit = document.getElementById('close-modal-btn');
-		// if (cancelFormHabit) cancelFormHabit.addEventListener('click', closeModal);
-
-		const closeBtn = document.getElementById('close-modal-x');
-		if (closeBtn) closeBtn.addEventListener('click', closeModal);
+		if (newHabit)
+			newHabit.addEventListener('click', () => {
+				formHandler();
+				//openModal();
+			});
 
 		// Sesarch Bar
 		const habitSearch = document.getElementById('habit-search');
@@ -110,42 +91,32 @@ const toggleTheme = () => {
 	localStorage.setItem('theme', newTheme);
 };
 
-const settClickOutside = (e) => {
-	const sett = document.getElementById('settings');
-	if (!sett.contains(e.target)) {
-		hideSettings();
-	}
-};
+// const settClickOutside = (e) => {
+// 	const sett = document.getElementById('settings');
+// 	if (!sett.contains(e.target)) {
+// 		hideSettings();
+// 	}
+// };
 
-const showSettings = () => {
-	const settIcon = document.getElementById('sett-icon');
-	const sett = document.getElementById('settings');
-	settIcon.classList.add('fa-spin');
-	setTimeout(() => settIcon.classList.remove('fa-spin'), 1000);
-	sett.style.display = 'block';
-	document.addEventListener('click', settClickOutside);
-};
+// const hideSettings = () => {
+// 	const settIcon = document.getElementById('sett-icon');
+// 	const sett = document.getElementById('settings');
+// 	settIcon.classList.remove('fa-spin');
+// 	sett.style.display = 'none';
+// 	document.removeEventListener('click', settClickOutside);
+// };
 
-const hideSettings = () => {
-	const settIcon = document.getElementById('sett-icon');
-	const sett = document.getElementById('settings');
-	settIcon.classList.remove('fa-spin');
-	sett.style.display = 'none';
-	document.removeEventListener('click', settClickOutside);
-};
+export const formHandler = async (habit = null) => {
+	const modal = newModal();
 
-export const formHandler = async (habit) => {
-	const modalBody = document.getElementById('modal-body');
-	modalBody.innerHTML = '';
-
+	const modalBody = modal.querySelector('#modal-body');
 	const formResp = await fetch('./habitForm.html');
 	const formHtml = await formResp.text();
 
 	modalBody.insertAdjacentHTML('beforeend', formHtml);
 
-	const modal = document.getElementById('modal');
-	const form = document.getElementById('habit-form');
-	modal.style.display = 'flex';
+	const form = modal.querySelector('#habit-form');
+
 	// Header
 	modal.querySelector('#modal-header #modal-title').textContent = habit?.id
 		? 'Edit Habit'
@@ -159,7 +130,12 @@ export const formHandler = async (habit) => {
 
 	const cancelBtn = modal.querySelector('#modal-footer #close-modal-btn');
 	cancelBtn.addEventListener('click', () => {
-		habit?.id ? viewDetails(habit) : closeModal();
+		habit?.id
+			? (function () {
+					viewDetails(habit);
+					//openModal();
+			  })()
+			: closeModal();
 	});
 
 	//Body
@@ -169,36 +145,56 @@ export const formHandler = async (habit) => {
 	form.elements.id.value = habit?.id || '';
 	form.elements.title.focus();
 
-	//openModal();
+	openModal(modal);
 };
 
 export const closeModal = () => {
-	document.getElementById('modal').style.display = 'none';
-	const cancelBtn = document.getElementById('cancel-modal-btn');
-	if (cancelBtn) cancelBtn.removeEventListener('click', closeModal);
+	const modal = document.getElementById('modal');
+	modal.innerHTML = '';
+	modal.style.display = 'none';
 };
 
-const openModal = () => {
-	document.getElementById('modal').style.display = 'flex';
+export const newModal = () => {
+	const temp = document.getElementById('modal-template');
+	const clone = temp.content.cloneNode(true);
+
+	// X Close Button Modal
+	const closeBtn = clone.querySelector('#close-modal-x');
+	if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+	return clone;
+};
+
+export const openModal = (content) => {
+	const modal = document.getElementById('modal');
+
+	modal.innerHTML = '';
+	modal.appendChild(content);
+
+	modal.style.display = 'flex';
+};
+
+export const clearEventListeners = (el) => {
+	const clone = el.cloneNode(true);
+	el.parentNode.replaceChild(clone, el);
+	return clone;
 };
 
 export const viewDetails = async (habit) => {
-	const modal = document.getElementById('modal');
-	modal.style.display = 'block';
+	const modal = newModal();
+	const cancelBtn = modal.querySelector('#modal-footer #close-modal-btn');
+
 	const resp = await fetch('./habitDetails.html');
 	const detailsView = await resp.text();
-	const cancelBtn = modal.querySelector('#modal-footer #close-modal-btn');
 
 	// Modal Header
 	modal.querySelector('#modal-header #modal-title').textContent = 'Details';
 
 	// Modal Body
 	const modalBody = modal.querySelector('#modal-body');
-	modalBody.innerHTML = '';
 	modalBody.insertAdjacentHTML('beforeend', detailsView);
 	// Edit button
 	modalBody.querySelector('#edit-btn').addEventListener('click', () => {
-		cancelBtn.removeEventListener('click', closeModal);
 		formHandler(habit);
 	});
 	// Delete button
@@ -230,9 +226,11 @@ export const viewDetails = async (habit) => {
 	);
 
 	// Modal Footer
-	cancelBtn.innerHTML = 'Cancel';
+	cancelBtn.innerHTML = 'Close';
 	cancelBtn.addEventListener('click', closeModal);
 	modal.querySelector('#modal-footer #submit-btn').style.display = 'none';
+
+	openModal(modal);
 };
 
 export const handleSubmit = async (e) => {
@@ -291,16 +289,18 @@ export const handleSubmit = async (e) => {
 };
 
 export const openSettings = () => {
-	document.getElementById('modal-title').textContent = 'Settings';
-	const modalBody = document.getElementById('modal-body');
-	modalBody.innerHTML = `<div class="sett-menu">
+	const modal = newModal();
+	modal.querySelector('#modal-title').textContent = 'Settings';
+	const modalBody = modal.querySelector('#modal-body');
+	modalBody.innerHTML = `
+				<div class="sett-menu">
 					<button id="theme-btn" class="theme-toggle-button">Theme</button>
 					<input type="datetime-local" id="test-date" />
 					<button id="clear-data">Clear Data</button>
 				</div>`;
 
 	// Test Date
-	const testDate = document.getElementById('test-date');
+	const testDate = modal.querySelector('#test-date');
 	if (testDate)
 		testDate.addEventListener('input', () => {
 			checkDates();
@@ -308,24 +308,21 @@ export const openSettings = () => {
 		});
 
 	//submit btn
-	document.getElementById('submit-btn').style.display = 'none';
+	modal.querySelector('#submit-btn').style.display = 'none';
 
 	// Theme
-	const themeBtn = document.getElementById('theme-btn');
+	const themeBtn = modal.querySelector('#theme-btn');
 	if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
-	const theme = localStorage.getItem('theme') || 'light';
-	document.documentElement.setAttribute('data-theme', theme);
-
 	// Clear all data
-	const clear = document.getElementById('clear-data');
+	const clear = modal.querySelector('#clear-data');
 	if (clear) clear.addEventListener('click', clearData);
 
-	openModal();
-
 	//Cancel Button
-	const cancelBtn = document.getElementById('close-modal-btn');
+	const cancelBtn = modal.querySelector('#close-modal-btn');
 	cancelBtn.addEventListener('click', closeModal);
+
+	openModal(modal);
 };
 
 initializeApp();
