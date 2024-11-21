@@ -121,7 +121,7 @@ const toggleTheme = () => {
 export const formHandler = async (habit = null) => {
 	const modal = newModal();
 
-	const modalBody = modal.querySelector('#modal-body');
+	const modalBody = modal.querySelector('.modal-body');
 	const formResp = await fetch('./habitForm.html');
 	const formHtml = await formResp.text();
 
@@ -130,17 +130,17 @@ export const formHandler = async (habit = null) => {
 	const form = modal.querySelector('#habit-form');
 
 	// Header
-	modal.querySelector('#modal-header #modal-title').textContent = habit?.id
+	modal.querySelector('.modal-header #modal-title').textContent = habit?.id
 		? 'Edit Habit'
 		: 'Add New Habit';
 
 	// Footer
-	const submitBtn = modal.querySelector('#modal-footer #submit-btn');
+	const submitBtn = modal.querySelector('.modal-footer #submit-btn');
 	submitBtn.style.display = 'inline';
 	submitBtn.textContent = habit?.id ? 'Save' : 'Submit';
 	form.addEventListener('submit', handleSubmit);
 
-	const cancelBtn = modal.querySelector('#modal-footer #close-modal-btn');
+	const cancelBtn = modal.querySelector('.modal-footer #close-modal-btn');
 	cancelBtn.addEventListener('click', () => {
 		habit?.id
 			? (function () {
@@ -194,23 +194,23 @@ export const clearEventListeners = (el) => {
 
 export const viewDetails = async (habit) => {
 	const modal = newModal();
-	const cancelBtn = modal.querySelector('#modal-footer #close-modal-btn');
+	const cancelBtn = modal.querySelector('.modal-footer #close-modal-btn');
 
 	const resp = await fetch('./habitDetails.html');
 	const detailsView = await resp.text();
 
 	// Modal Header
-	modal.querySelector('#modal-header #modal-title').textContent = 'Details';
+	modal.querySelector('.modal-header #modal-title').textContent = 'Details';
 
 	// Modal Body
-	const modalBody = modal.querySelector('#modal-body');
+	const modalBody = modal.querySelector('.modal-body');
 	modalBody.insertAdjacentHTML('beforeend', detailsView);
 	// Edit button
-	modalBody.querySelector('#edit-btn').addEventListener('click', () => {
+	modalBody.querySelector('.edit-btn').addEventListener('click', () => {
 		formHandler(habit);
 	});
 	// Delete button
-	modalBody.querySelector('#del-btn').addEventListener('click', () => {
+	modalBody.querySelector('.del-btn').addEventListener('click', () => {
 		deleteHabit(habit.id);
 		closeModal();
 	});
@@ -240,7 +240,7 @@ export const viewDetails = async (habit) => {
 	// Modal Footer
 	cancelBtn.innerHTML = 'Close';
 	cancelBtn.addEventListener('click', closeModal);
-	modal.querySelector('#modal-footer #submit-btn').style.display = 'none';
+	modal.querySelector('.modal-footer #submit-btn').style.display = 'none';
 
 	openModal(modal);
 };
@@ -303,13 +303,22 @@ export const handleSubmit = async (e) => {
 export const openSettings = () => {
 	const modal = newModal();
 	modal.querySelector('#modal-title').textContent = 'Settings';
-	const modalBody = modal.querySelector('#modal-body');
+	const modalBody = modal.querySelector('.modal-body');
 	modalBody.innerHTML = `
-				<div class="sett-menu">
-					<button id="theme-btn" class="theme-toggle-button">Theme</button>
-					<input type="datetime-local" id="test-date" />
-					<button id="clear-data">Clear Data</button>
-				</div>`;
+	<div class="sett-menu">
+		<div class="flex spbt">
+			<p>Change Theme</p>
+			<button id="theme-btn" class="theme-toggle-button">Theme</button>
+		</div>
+		<div class="flex spbt">
+			<p>Change Date</p>
+			<input type="datetime-local" id="test-date" />
+		</div>
+		<div class="flex spbt">
+			<p>Clear All Data</p>
+			<button id="clear-data">Clear Data</button>
+		</div>
+	</div>`;
 
 	// Test Date
 	const testDate = modal.querySelector('#test-date');

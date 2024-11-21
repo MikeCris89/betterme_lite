@@ -83,9 +83,7 @@
 
 					<!-- Page Title-->
 					<div class="stats-col">
-						<div class="page-title">
-							<h1>Stats</h1>
-						</div>
+						<!--  -->
 						<div class="weekly-stats flex spar"></div>
 					</div>
 				</div>
@@ -97,15 +95,15 @@
 		<!-- TEMPLATES -->
 		<template id="modal-template">
 			<div class="modal-content">
-				<div class="flex spbt gap2" id="modal-header">
+				<div class="modal-header flex spbt gap2">
 					<h4 id="modal-title"></h4>
 					<i
 						class="fa-solid fa-xmark fa-lg cursor pad1 close-modal"
 						id="close-modal-x"
 					></i>
 				</div>
-				<div id="modal-body"></div>
-				<div class="align-right" id="modal-footer">
+				<div class="modal-body"></div>
+				<div class="modal-footer align-right">
 					<button class="btn" id="close-modal-btn">Close</button>
 					<button
 						class="btn submit-btn"
@@ -122,14 +120,17 @@
 		<template id="habit-card-template">
 			<div class="flex spbt gap2 nowrap card-container">
 				<div class="card">
-					<div class="flex spbt">
+					<div class="card-header flex spbt">
 						<h3 class="habit-title"></h3>
 						<p class="align-right habit-per-day"></p>
 					</div>
 
 					<div class="progress-bar"></div>
 				</div>
-				<div class="checkmark"><i class="fa-solid fa-check"></i></div>
+				<div class="message-cont"><h2></h2></div>
+				<div class="checkmark">
+					<button class="check-button"><i class="fa-solid fa-check"></i></button>
+				</div>
 			</div>
 		</template>
 		<!-- Progress Circle -->
@@ -144,13 +145,7 @@
 						</div>
 					</div>
 				</div>
-				<h3></h3>
-			</div>
-		</template>
-		<!-- Progress Half-Circle -->
-		<template>
-			<div class="half-circle">
-				<div class="progress-half-circle"></div>
+				<h5></h5>
 			</div>
 		</template>
 		<!-- Settings Menu-->

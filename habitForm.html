@@ -1,35 +1,35 @@
 <form id="habit-form">
-  <label for="title">Title:</label>
-  <input type="text" id="title" name="title" required />
-  <br />
-  <p>Frequency</p>
-  <hr />
-  <br />
-  <label for="perday">Times Per Day: </label>
-  <input
-    class="num-input"
-    type="number"
-    id="perday"
-    name="perday"
-    min="0"
-    max="20"
-    width="50px"
-    required
-  />
-  <br />
-  <label for="perweek">Days Per Week: </label>
-  <input
-    class="num-input"
-    type="number"
-    id="perweek"
-    name="perweek"
-    min="0"
-    max="7"
-    required
-  />
+	<label for="title">Title:</label>
+	<input type="text" id="title" name="title" maxlength="30" required />
+	<br />
+	<p>Frequency</p>
+	<hr />
+	<br />
+	<label for="perday">Times Per Day: </label>
+	<input
+		class="num-input"
+		type="number"
+		id="perday"
+		name="perday"
+		min="0"
+		max="20"
+		width="50px"
+		required
+	/>
+	<br />
+	<label for="perweek">Days Per Week: </label>
+	<input
+		class="num-input"
+		type="number"
+		id="perweek"
+		name="perweek"
+		min="0"
+		max="7"
+		required
+	/>
 
-  <br /><br />
-  <hr />
-  <br />
-  <input type="hidden" name="id" id="id" />
+	<br /><br />
+	<hr />
+	<br />
+	<input type="hidden" name="id" id="id" />
 </form>

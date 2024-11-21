@@ -17,8 +17,8 @@ const renderStats = async (habits = null) => {
 	// Avg
 	const avgTemp = document.getElementById('progress-circle-template');
 	const avgStats = avgTemp.content.cloneNode(true);
-	weekStats.querySelector('.circle-cont h3').textContent = 'This Week';
-	avgStats.querySelector('.circle-cont h3').textContent = 'Avg /week';
+	weekStats.querySelector('.circle-cont h5').textContent = 'This Week';
+	avgStats.querySelector('.circle-cont h5').textContent = 'Avg /week';
 
 	// Calc
 	const weekly = weeklyStats(habits);
@@ -42,11 +42,11 @@ const renderStats = async (habits = null) => {
 	// Render
 	weekStats.querySelector('.inner-circle div div').textContent = `${value}`;
 	avgStats.querySelector('.inner-circle div div').textContent = `${valueAll}`;
-	weekStats.querySelector('.circle').style.background = `conic-gradient(
+	weekStats.querySelector('.progress').style.background = `conic-gradient(
 		#4caf50 calc(${value} * 1%),
 		#e0e0e0 0
 	)`;
-	avgStats.querySelector('.circle').style.background = `conic-gradient(
+	avgStats.querySelector('.progress').style.background = `conic-gradient(
 		#4caf50 calc(${valueAll} * 1%),
 		#e0e0e0 0
 	)`;

@@ -1,6 +1,6 @@
 import { renderHabits } from '../UI/habits.js';
 import { clearAllData, getData, saveData } from './api.js';
-import { thisWeekStart, today } from './helpers.js';
+import { getProgressColor, thisWeekStart, today } from './helpers.js';
 
 let allHabits = null;
 
@@ -55,24 +55,47 @@ export const deleteHabit = async (id) => {
 };
 
 export const checkOff = async (habit) => {
+	const cardCont = document.querySelector(`.card-container#${habit.id}`);
+	cardCont.classList.add('active');
+
 	const habits = await fetchHabits();
-	const newHabits = habits.map((el) =>
-		el.id === habit.id
-			? {
-					...el,
-					freq: {
-						...el.freq,
-						day: { ...el.freq.day, complete: el.freq.day.complete + 1 },
-						week: {
-							...el.freq.week,
-							complete: el.freq.week.complete + 1,
-						},
+	const newHabits = habits.map((el) => {
+		if (el.id === habit.id) {
+			let dayComplete = el.freq.day.complete + 1;
+			let weekComplete = el.freq.week.complete + 1;
+
+			cardCont.querySelector(
+				'.habit-per-day'
+			).textContent = `${dayComplete} / ${el.freq.day.per}`;
+			const progressBar = cardCont.querySelector('.progress-bar');
+			const progressValue = Math.min(100, (weekComplete / el.freq.week.per) * 100);
+			progressBar.style.background = getProgressColor(progressValue, true);
+
+			// Check Message
+			cardCont.querySelector('.message-cont h2').textContent = '+1';
+			cardCont.querySelector('.message-cont').classList.add('active');
+
+			const newH = {
+				...el,
+				freq: {
+					...el.freq,
+					day: { ...el.freq.day, complete: dayComplete },
+					week: {
+						...el.freq.week,
+						complete: weekComplete,
 					},
-			  }
-			: el
-	);
-	await saveHabits(newHabits);
-	renderHabits();
+				},
+			};
+			return newH;
+		} else {
+			return el;
+		}
+	});
+
+	saveHabits(newHabits);
+	setTimeout(() => {
+		renderHabits();
+	}, 1000);
 };
 
 // Check habits for dates daily / weekly

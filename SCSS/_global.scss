@@ -7,8 +7,10 @@
 	--button-bg-color: #3498db;
 	--button-text-color: #ffffff;
 	--modal-bg-color: #ffffff;
-	--card-bg-color: #3498db50;
+	--stats-inner-color: #a3d9f9;
 
+	--card-bg-color: #3498db50;
+	// --card-bg-color: #3498db50;
 	/* general */
 	--theme-transition: background-color 0.5s ease, color 0.5s ease;
 	--progress-week: 0;
@@ -29,6 +31,7 @@
 	--button-text-color: #ffffff;
 	--modal-bg-color: #3a3a3a;
 	--card-bg-color: #3a3a3a;
+	--stats-inner-color: #3a3a3a;
 }
 
 * {
@@ -76,27 +79,27 @@ h1 {
 
 h2 {
 	font-size: 1.375rem; /* 22px */
-	margin-bottom: 0.5em;
+	//margin-bottom: 0.5em;
 }
 
 h3 {
 	font-size: 1.25rem; /* 20px */
-	margin-bottom: 0.5em;
+	//margin-bottom: 0.5em;
 }
 
 h4 {
 	font-size: 1.125rem; /* 18px */
-	margin-bottom: 0.5em;
+	//margin-bottom: 0.5em;
 }
 
 h5 {
 	font-size: 1rem; /* 16px */
-	margin-bottom: 0.5em;
+	//margin-bottom: 0.5em;
 }
 
 h6 {
 	font-size: 0.875rem; /* 14px */
-	margin-bottom: 0.5em;
+	//margin-bottom: 0.5em;
 }
 
 p {
@@ -117,6 +120,7 @@ button {
 	background: var(--bg-color);
 	color: var(--text-color);
 	padding: 10px 20px;
+	cursor: pointer;
 }
 
 .submit-btn {
@@ -212,7 +216,7 @@ input::placeholder {
 .modal-content {
 	background-color: var(--modal-bg-color);
 	padding: 20px;
-	height: clamp(400px, fit-content, 80%);
+	height: fit-content;
 	width: clamp(50%, 600px, 95%);
 	margin: 100px auto;
 	border-radius: 10px;
@@ -220,33 +224,36 @@ input::placeholder {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
+
+	&.settings {
+	}
 }
 
-.modal-settings {
-	display: none;
-	position: absolute;
-	top: 50;
-	right: 1px;
-	background-color: var(--modal-bg-color);
-	border: 1px solid var(--text-color);
-	padding: 20px;
-	height: 200px;
-	border-radius: 10px;
-	z-index: 1000;
-	transition: var(--theme-transition);
-}
+// .modal-settings {
+// 	display: none;
+// 	position: absolute;
+// 	top: 50;
+// 	right: 1px;
+// 	background-color: var(--modal-bg-color);
+// 	border: 1px solid var(--text-color);
+// 	padding: 20px;
+// 	height: 200px;
+// 	border-radius: 10px;
+// 	z-index: 1000;
+// 	transition: var(--theme-transition);
+// }
 
-#modal-header {
+.modal-header {
 	height: 100%;
 	flex: 0;
 }
 
-#modal-body {
+.modal-body {
 	height: 100%;
-	flex: 0;
+	flex: 1;
 }
 
-#modal-footer {
+.modal-footer {
 	height: 100%;
 	flex: 0;
 }
@@ -257,7 +264,8 @@ input::placeholder {
 	align-items: start;
 	justify-content: space-between;
 	height: 100%;
-	width: 100%;
+	width: 80%;
+	margin: auto;
 }
 
 .flex {
@@ -265,6 +273,7 @@ input::placeholder {
 	align-items: center;
 	flex-wrap: wrap;
 	justify-content: center;
+	width: 100%;
 }
 
 .col {

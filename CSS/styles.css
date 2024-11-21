@@ -7,6 +7,7 @@
   --button-bg-color: #3498db;
   --button-text-color: #ffffff;
   --modal-bg-color: #ffffff;
+  --stats-inner-color: #a3d9f9;
   --card-bg-color: #3498db50;
   /* general */
   --theme-transition: background-color 0.5s ease, color 0.5s ease;
@@ -25,6 +26,7 @@
   --button-text-color: #ffffff;
   --modal-bg-color: #3a3a3a;
   --card-bg-color: #3a3a3a;
+  --stats-inner-color: #3a3a3a;
 }
 
 * {
@@ -72,27 +74,22 @@ h1 {
 
 h2 {
   font-size: 1.375rem; /* 22px */
-  margin-bottom: 0.5em;
 }
 
 h3 {
   font-size: 1.25rem; /* 20px */
-  margin-bottom: 0.5em;
 }
 
 h4 {
   font-size: 1.125rem; /* 18px */
-  margin-bottom: 0.5em;
 }
 
 h5 {
   font-size: 1rem; /* 16px */
-  margin-bottom: 0.5em;
 }
 
 h6 {
   font-size: 0.875rem; /* 14px */
-  margin-bottom: 0.5em;
 }
 
 p {
@@ -112,6 +109,7 @@ button {
   background: var(--bg-color);
   color: var(--text-color);
   padding: 10px 20px;
+  cursor: pointer;
 }
 
 .submit-btn {
@@ -202,7 +200,7 @@ input::placeholder {
 .modal-content {
   background-color: var(--modal-bg-color);
   padding: 20px;
-  height: clamp(400px, fit-content, 80%);
+  height: fit-content;
   width: clamp(50%, 600px, 95%);
   margin: 100px auto;
   border-radius: 10px;
@@ -211,32 +209,17 @@ input::placeholder {
   flex-direction: column;
   gap: 10px;
 }
-
-.modal-settings {
-  display: none;
-  position: absolute;
-  top: 50;
-  right: 1px;
-  background-color: var(--modal-bg-color);
-  border: 1px solid var(--text-color);
-  padding: 20px;
-  height: 200px;
-  border-radius: 10px;
-  z-index: 1000;
-  transition: var(--theme-transition);
-}
-
-#modal-header {
+.modal-header {
   height: 100%;
   flex: 0;
 }
 
-#modal-body {
+.modal-body {
   height: 100%;
-  flex: 0;
+  flex: 1;
 }
 
-#modal-footer {
+.modal-footer {
   height: 100%;
   flex: 0;
 }
@@ -247,7 +230,8 @@ input::placeholder {
   align-items: start;
   justify-content: space-between;
   height: 100%;
-  width: 100%;
+  width: 80%;
+  margin: auto;
 }
 
 .flex {
@@ -255,6 +239,7 @@ input::placeholder {
   align-items: center;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
 }
 
 .col {
@@ -316,6 +301,11 @@ input::placeholder {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  flex-direction: column;
+}
+.main-container header {
+  margin-bottom: 10px;
+  margin-top: 0;
 }
 
 .page-title {
@@ -326,11 +316,12 @@ input::placeholder {
   flex: 0 0 auto;
   width: 100%;
   background-color: var(--bg-color);
+  padding: 5px 0;
   overflow: hidden;
   opacity: 0;
   height: 0;
   transform: translateY(-10px);
-  transition: transform 0.75s ease, opacity 0.75s ease, height 0.5s ease;
+  transition: transform 0.5s ease, opacity 0.5s ease, height 0.5s ease;
 }
 .search-container.visible {
   opacity: 1;
@@ -363,16 +354,6 @@ input::placeholder {
   flex: 1;
 }
 
-#new-habit {
-  font-size: 18px;
-  color: #fff;
-  background-color: var(--primary-color);
-  width: fit-content;
-  margin: auto;
-  padding: 0 10px;
-  border-radius: 8px;
-}
-
 .list-container {
   flex: 1;
   height: 100%;
@@ -393,7 +374,6 @@ input::placeholder {
   justify-items: end;
   width: 100%;
   height: fit-content;
-  margin-bottom: 10px;
 }
 .tab-nav #mag-glass {
   margin: auto;
@@ -407,6 +387,7 @@ input::placeholder {
   border-bottom: 2px solid var(--primary-color);
   font-size: 1.2rem;
   margin-top: 5px;
+  cursor: pointer;
   border-top: none;
   border-radius: 0;
   width: 100%;
@@ -419,6 +400,17 @@ input::placeholder {
 }
 .tab.add-tab {
   border-right: none;
+  cursor: default;
+}
+.tab.add-tab #new-habit {
+  cursor: pointer;
+  font-size: 18px;
+  color: #fff;
+  background-color: var(--primary-color);
+  width: fit-content;
+  margin: auto;
+  padding: 0 10px;
+  border-radius: 8px;
 }
 
 .stats-col {
@@ -445,12 +437,14 @@ input::placeholder {
   width: 100%;
   flex: 1;
   height: 100%;
+  background-color: var(--bg-color);
+  padding-top: 10px;
 }
 .habit-list .habit-cont {
   width: 100%;
   opacity: 0;
   transition: opacity 0.5s ease, transform 0.5s ease;
-  transform: translateY(-10px);
+  transform: translateY(10px);
 }
 .habit-list .habit-cont.visible {
   opacity: 1;
@@ -460,9 +454,12 @@ input::placeholder {
 .weekly-stats {
   width: 100%;
   height: 100%;
+  padding: 10px;
 }
 
 .card-container {
+  flex: 1;
+  flex-wrap: wrap;
   width: 95%;
   max-width: 600px;
   margin: auto;
@@ -470,59 +467,99 @@ input::placeholder {
   background-color: var(--card-bg-color);
   border-radius: 12px;
   padding: 1px 4px;
-  transition: var(--theme-transition);
+  opacity: 1;
+  transition: var(--theme-transition), opacity 0.75s ease-out 0.5s;
+  height: fit-content;
+}
+.card-container.active {
+  opacity: 0;
+}
+.card-container .message-cont {
+  opacity: 0;
+  transform: translateY(0);
+  transition: opacity 0.75s ease, transform 1s ease-out;
+}
+.card-container .message-cont.active {
+  opacity: 1;
+  transform: translateY(-20px);
 }
 
 .card {
+  flex: 1;
   padding: 10px;
   border-radius: 12px;
   width: 100%;
   max-width: 250px;
+  height: fit-content;
+  flex-wrap: nowrap;
 }
-
 .card:hover {
   cursor: pointer;
+}
+.card .card-header {
+  flex-wrap: nowrap;
+  height: fit-content;
+  justify-content: start;
+  align-items: start;
+}
+.card .card-header .habit-title {
+  height: fit-content;
+  overflow-wrap: break-word; /* Ensures long words break */
+  word-break: break-word; /* Fallback for older browsers */
+  white-space: normal; /* Allow normal wrapping */
+  width: 100%;
+}
+.card .card-header p {
+  flex-shrink: 0;
+  width: fit-content;
+  height: fit-content;
 }
 
 .card-selected {
   background-color: rgba(173, 216, 230, 0.4392156863);
 }
 
-#clear-search:hover {
-  cursor: pointer;
-}
-
 .list-item:hover {
   cursor: pointer;
 }
 
-.fa-check {
+.check-button {
   padding: 20px 30px;
   border: 2px solid rgba(0, 128, 0, 0.3137254902);
   border-radius: 10px;
   color: green;
   background: var(--bg-color);
 }
-
-.fa-check:hover {
+.check-button:hover {
   cursor: pointer;
 }
-
-.fa-check:active {
+.check-button:active:not([disabled]) {
   background: green;
   color: white;
+}
+.check-button[disabled] {
+  pointer-events: none;
 }
 
 .num-input {
   width: 50px;
 }
 
-#del-btn {
-  padding: 5px;
+.details-btn-cont {
+  width: 80%;
+  margin: auto;
+  flex-wrap: nowrap;
 }
-
-#title {
-  padding-right: 20px;
+.details-btn-cont .del-btn {
+  padding: 5px;
+  align-items: center;
+}
+.details-btn-cont .del-btn .fa-trash {
+  color: red;
+}
+.details-btn-cont .edit-btn {
+  padding: 5px;
+  align-items: center;
 }
 
 .progress-bar {
@@ -538,16 +575,17 @@ input::placeholder {
   font-size: 12px;
 }
 
+/** Progress Circle */
 .circle {
   position: relative;
   width: 85px;
   aspect-ratio: 1/1;
   border-radius: 50%;
   margin: auto;
+  overflow: hidden;
 }
 
 .progress {
-  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
@@ -561,7 +599,8 @@ input::placeholder {
   left: 10%;
   width: 80%;
   height: 80%;
-  background: var(--card-bg-color);
+  background: var(--stats-inner-color);
+  background-blend-mode: normal;
   border-radius: 50%;
   color: var(--text-color);
   text-align: right;
@@ -585,45 +624,14 @@ input::placeholder {
   font-size: 10px;
 }
 
-.half-circle {
-  position: relative;
-  width: 200px; /* Width of the semicircle */
-  height: 100px; /* Half the height */
-  background: conic-gradient(#4caf50 calc(var(--progress-week, 0) * 1%), #e0e0e0 0);
-  border-radius: 100px 100px 0 0; /* Top corners rounded for semicircle */
-  overflow: hidden; /* Clip the lower half */
-}
-
-.progress-half-circle {
-  position: absolute;
-  top: 10%;
-  left: 10%;
-  width: 80%;
-  height: 100%;
-  background: var(--card-bg-color); /* Use the same background as the parent */
-  border-radius: 100px 100px 0 0; /* Top corners rounded for semicircle */
-  /* clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0% 50%); */
-}
-
 @media (min-width: 769px) {
   .list-container {
     display: grid;
     grid-template-columns: 2fr 1fr;
   }
-  .main-container {
-    flex-direction: column;
-  }
   .weekly-stats {
     flex-direction: column;
   }
 }
-/* .list-container,
-main,
-header {
-	border: 1px solid red;
-}
-#habit-list {
-	border: 4px solid blue;
-} */
 
 /*# sourceMappingURL=styles.css.map */
