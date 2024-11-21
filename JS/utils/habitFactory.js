@@ -19,6 +19,10 @@ const habitFactory = async ({ title, perDay, daysPerWeek }) => {
 				date: thisWeekStart(),
 				complete: 0,
 			},
+			allTime: {
+				complete: 0,
+				total: 0,
+			},
 		},
 		createdAt: new Date(),
 		id: await generateId(),

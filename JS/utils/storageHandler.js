@@ -1,4 +1,4 @@
-import renderHabits from '../UI/habits.js';
+import { renderHabits } from '../UI/habits.js';
 import { clearAllData, getData, saveData } from './api.js';
 import { thisWeekStart, today } from './helpers.js';
 
@@ -89,18 +89,31 @@ const resetDailyProgress = (habits, thisDay) =>
 			: habit
 	);
 
-const resetWeeklyProgress = (habits, thisWeek) =>
-	habits.map((habit) =>
-		habit.freq.week.date !== thisWeek
+const resetWeeklyProgress = (habits, thisWeek) => {
+	const newHabits = habits.map((habit) => {
+		if (!habit.allTime)
+			habit = {
+				...habit,
+				freq: { ...habit.freq, allTime: { complete: 0, total: 0 } },
+			};
+		return habit.freq.week.date !== thisWeek
 			? {
 					...habit,
 					freq: {
 						...habit.freq,
 						week: { ...habit.freq.week, date: thisWeek, complete: 0 },
+						allTime: {
+							...habit.freq.allTime,
+							total: habit.freq.allTime.total + habit.freq.week.per,
+							complete: habit.freq.allTime.complete + habit.freq.week.complete,
+						},
 					},
 			  }
-			: habit
-	);
+			: habit;
+	});
+
+	return newHabits;
+};
 
 const setDates = (thisDay, thisWeek) => {
 	return {
@@ -118,7 +131,7 @@ export const checkDates = async () => {
 
 		if (!dates) {
 			dates = setDates(thisDay, thisWeek);
-			localStorage.setItem('dates', JSON.stringify(dates));
+			saveData('dates', dates);
 		}
 
 		if (dates.day !== thisDay || dates.week !== thisWeek) {

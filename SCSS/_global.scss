@@ -7,11 +7,12 @@
 	--button-bg-color: #3498db;
 	--button-text-color: #ffffff;
 	--modal-bg-color: #ffffff;
-	--card-bg-color: #fff;
+	--card-bg-color: #3498db50;
 
 	/* general */
-	--theme-transition: background-color 1s ease, color 1s ease;
-	--progress: 0;
+	--theme-transition: background-color 0.5s ease, color 0.5s ease;
+	--progress-week: 0;
+	--progress-avg: 0;
 }
 
 /* Mobile Variables */
@@ -110,7 +111,17 @@ p {
 button {
 	font-size: 1rem;
 	padding: 3px 5px;
-	border-radius: 5px;
+	border-radius: 6px;
+	justify-self: center;
+	align-self: center;
+	background: var(--bg-color);
+	color: var(--text-color);
+	padding: 10px 20px;
+}
+
+.submit-btn {
+	background-color: var(--primary-color);
+	color: white;
 }
 
 /* Desktop Headings */
@@ -166,7 +177,7 @@ a {
 }
 
 input::placeholder {
-	font-size: 12px;
+	font-size: 16px;
 	font-style: italic;
 	opacity: 0.7;
 }
@@ -195,17 +206,20 @@ input::placeholder {
 	background-color: #00000050;
 	width: 100%;
 	height: 100%;
-	justify-content: center;
+	justify-content: start;
 }
 
 .modal-content {
 	background-color: var(--modal-bg-color);
 	padding: 20px;
-	height: clamp(50%, fit-content, 95%);
+	height: clamp(400px, fit-content, 80%);
 	width: clamp(50%, 600px, 95%);
-	margin: auto;
+	margin: 100px auto;
 	border-radius: 10px;
 	transition: var(--theme-transition);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
 
 .modal-settings {
@@ -222,6 +236,21 @@ input::placeholder {
 	transition: var(--theme-transition);
 }
 
+#modal-header {
+	height: 100%;
+	flex: 0;
+}
+
+#modal-body {
+	height: 100%;
+	flex: 0;
+}
+
+#modal-footer {
+	height: 100%;
+	flex: 0;
+}
+
 .sett-menu {
 	display: flex;
 	flex-direction: column;
@@ -235,6 +264,7 @@ input::placeholder {
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
+	justify-content: center;
 }
 
 .col {

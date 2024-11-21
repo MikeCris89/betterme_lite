@@ -39,45 +39,54 @@
 				</nav>
 			</header>
 			<main>
-				<!-- Page Title-->
-				<div class="page-title">
-					<h1>Habits</h1>
-				</div>
-				<!-- Search Bar -->
-				<div class="search-container flex alc">
-					<i
-						class="fa-solid fa-xmark fa-lg cursor pad1 close-modal"
-						id="clear-search"
-					></i>
-					<div class="search-bar">
-						<input
-							type="text"
-							id="habit-search"
-							name="habit-search"
-							placeholder="search all"
-						/>
-						<i class="fa-solid fa-magnifying-glass" id="mag-glass"></i>
-					</div>
-				</div>
 				<!-- Habits List and Stats-->
 				<div class="list-container">
 					<!-- Habit Col-->
 					<div class="flex col habit-col">
+						<!-- Page Title-->
+						<div class="page-title">
+							<h1>Habits</h1>
+						</div>
 						<!-- TABS -->
-						<div class="flex spbt gap2">
-							<div class="flex">
-								<button class="tab" id="tab-todo">To-Do</button>
-								<button class="tab" id="tab-complete">Complete</button>
+						<div class="tab-nav">
+							<div class="tab" id="search-tab">
+								<!-- <div class="search-icon"> -->
+								<i class="fa-solid fa-magnifying-glass fa-lg" id="mag-glass"></i>
+								<!-- </div> -->
 							</div>
-							<button id="new-habit" class="btn">+add</button>
+							<!-- <div class="tab-container flex"> -->
+							<div class="tab" id="tab-todo"><div>To-Do</div></div>
+							<div class="tab" id="tab-complete"><div>Complete</div></div>
+							<!-- </div> -->
+							<div class="tab add-tab"><div id="new-habit">+add</div></div>
+						</div>
+						<!-- Search Bar -->
+						<div class="search-container flex">
+							<div class="search-bar flex">
+								<input
+									type="text"
+									id="habit-search"
+									name="habit-search"
+									placeholder="search all"
+								/>
+								<i
+									class="fa-solid fa-xmark fa-lg cursor pad1 close-modal"
+									id="clear-search"
+								></i>
+							</div>
 						</div>
 						<!-- Habit List Col -->
-						<div id="habit-list"></div>
+						<div class="habit-list"></div>
 					</div>
 
 					<!-- Stats Col -->
+
+					<!-- Page Title-->
 					<div class="stats-col">
-						<div id="progress-circle"></div>
+						<div class="page-title">
+							<h1>Stats</h1>
+						</div>
+						<div class="weekly-stats flex spar"></div>
 					</div>
 				</div>
 
@@ -88,7 +97,7 @@
 		<!-- TEMPLATES -->
 		<template id="modal-template">
 			<div class="modal-content">
-				<div class="flex spbt" id="modal-header">
+				<div class="flex spbt gap2" id="modal-header">
 					<h4 id="modal-title"></h4>
 					<i
 						class="fa-solid fa-xmark fa-lg cursor pad1 close-modal"
@@ -98,12 +107,18 @@
 				<div id="modal-body"></div>
 				<div class="align-right" id="modal-footer">
 					<button class="btn" id="close-modal-btn">Close</button>
-					<button class="btn" type="submit" form="habit-form" id="submit-btn">
+					<button
+						class="btn submit-btn"
+						type="submit"
+						form="habit-form"
+						id="submit-btn"
+					>
 						Submit
 					</button>
 				</div>
 			</div>
 		</template>
+		<!--Card Template-->
 		<template id="habit-card-template">
 			<div class="flex spbt gap2 nowrap card-container">
 				<div class="card">
@@ -117,12 +132,22 @@
 				<div class="checkmark"><i class="fa-solid fa-check"></i></div>
 			</div>
 		</template>
+		<!-- Progress Circle -->
 		<template id="progress-circle-template">
-			<div class="circle">
-				<div class="progress"></div>
-				<div class="inner-circle"><p></p></div>
+			<div class="circle-cont">
+				<div class="circle">
+					<div class="progress"></div>
+					<div class="inner-circle">
+						<div>
+							<div></div>
+							<span>%</span>
+						</div>
+					</div>
+				</div>
+				<h3></h3>
 			</div>
 		</template>
+		<!-- Progress Half-Circle -->
 		<template>
 			<div class="half-circle">
 				<div class="progress-half-circle"></div>

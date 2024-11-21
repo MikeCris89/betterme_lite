@@ -1,10 +1,14 @@
-import { openModal, viewDetails } from '../app.js';
+import { viewDetails } from '../app.js';
 import { addElement, getProgressColor } from '../utils/helpers.js';
 import { checkOff, fetchHabits } from '../utils/storageHandler.js';
 import renderStats from './stats.js';
 
 //let renderId = 0;
 let ignore = false;
+
+const sortHabits = (habits) => {
+	return habits.sort((a, b) => a.freq.day.complete - b.freq.day.complete);
+};
 
 const cardElement = (habit) => {
 	// get template and clone
@@ -15,7 +19,6 @@ const cardElement = (habit) => {
 	const card = container.querySelector('.card');
 	card.addEventListener('click', () => {
 		viewDetails(habit);
-		//openModal();
 	});
 
 	//content
@@ -42,22 +45,19 @@ const cardElement = (habit) => {
 	return container;
 };
 
-const sortHabits = (habits) => {
-	return habits.sort((a, b) => a.freq.day.complete - b.freq.day.complete);
-};
+/** Render Habits */
 
-const renderHabits = async () => {
+export const renderHabits = async () => {
 	if (ignore) return;
 	ignore = true;
-	// const thisId = renderId + 1;
-	// renderId = thisId;
-	const habitList = document.getElementById('habit-list');
+
+	const habitList = document.querySelector('.habit-list');
 	habitList.innerHTML = '';
 
 	let habits = await fetchHabits();
-	//if (renderId !== thisId) return;
+
 	console.log('Rendering habits.');
-	const list = addElement('div', ['flex', 'col', 'gap1', 'habit-cont']);
+	const list = addElement('div', ['flex', 'col', 'gap2', 'habit-cont']);
 
 	console.log('HABITS RESP: ', habits);
 	renderStats();
@@ -72,6 +72,7 @@ const renderHabits = async () => {
 			habits = habits.filter((habit) =>
 				habit.title.toLowerCase().includes(searchBar.value.toLowerCase())
 			);
+		} else if (searchBar & (searchBar.value === '')) {
 		} else if (todoTab.classList.contains('active')) {
 			habits = habits.filter(
 				(habit) =>
@@ -96,8 +97,20 @@ const renderHabits = async () => {
 	});
 
 	habitList.appendChild(list);
-	//renderId = 0;
+	setTimeout(() => {
+		list.classList.add('visible');
+	}, 50);
+
 	ignore = false;
 };
 
-export default renderHabits;
+/**Search Bar */
+export const openSearch = () => {
+	//search bar
+	const searchCont = document.querySelector('.search-container');
+	const searchBar = searchCont.querySelector('.search-bar');
+	searchCont.classList.add('visible');
+	document.getElementById('search-tab').classList.add('active');
+
+	searchBar.classList.add('visible');
+};

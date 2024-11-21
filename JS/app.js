@@ -6,8 +6,9 @@ import {
 	deleteHabit,
 	checkDates,
 } from './utils/storageHandler.js';
-import renderHabits from './UI/habits.js';
+import { openSearch, renderHabits } from './UI/habits.js';
 import './UI/stats.js';
+import { cleanTabs } from './utils/helpers.js';
 
 const initializeApp = async () => {
 	// Fetch Habits
@@ -38,9 +39,33 @@ const renderUI = () => {
 				//openModal();
 			});
 
-		// Sesarch Bar
+		// Tabs
+
+		const todoTab = document.getElementById('tab-todo');
+		const compTab = document.getElementById('tab-complete');
+		cleanTabs();
+		todoTab.classList.add('active');
+		// To-Do
+		if (todoTab) {
+			todoTab.addEventListener('click', () => {
+				cleanTabs();
+				todoTab.classList.add('active');
+				renderHabits();
+			});
+		}
+		// Complete
+		if (compTab) {
+			compTab.addEventListener('click', () => {
+				cleanTabs();
+				compTab.classList.add('active');
+				renderHabits();
+			});
+		}
+
+		// Search Bar
 		const habitSearch = document.getElementById('habit-search');
 		const clearSearch = document.getElementById('clear-search');
+		const searchIcon = document.getElementById('search-tab');
 		if (clearSearch)
 			if (habitSearch.value === '') clearSearch.style.display = 'none';
 		clearSearch.addEventListener('click', () => {
@@ -58,29 +83,16 @@ const renderUI = () => {
 				}
 			});
 		}
-
-		// Tabs
-		const todoTab = document.getElementById('tab-todo');
-		const compTab = document.getElementById('tab-complete');
-		todoTab.classList.add('active');
-		if (todoTab) {
-			todoTab.addEventListener('click', () => {
-				todoTab.classList.add('active');
-				compTab.classList.remove('active');
-				renderHabits();
-			});
-		}
-
-		if (compTab) {
-			compTab.addEventListener('click', () => {
-				compTab.classList.add('active');
-				todoTab.classList.remove('active');
+		if (searchIcon) {
+			searchIcon.addEventListener('click', () => {
+				cleanTabs();
+				openSearch();
 				renderHabits();
 			});
 		}
 
 		// Render Habit List
-		if (document.getElementById('habit-list')) renderHabits();
+		if (document.querySelector('.habit-list')) renderHabits();
 	});
 };
 
