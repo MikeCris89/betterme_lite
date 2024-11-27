@@ -51,14 +51,16 @@
 						<div class="tab-nav">
 							<div class="tab" id="search-tab">
 								<!-- <div class="search-icon"> -->
-								<i class="fa-solid fa-magnifying-glass fa-lg" id="mag-glass"></i>
+								<i class="fa-solid fa-magnifying-glass" id="mag-glass"></i>
 								<!-- </div> -->
 							</div>
 							<!-- <div class="tab-container flex"> -->
 							<div class="tab" id="tab-todo"><div>To-Do</div></div>
 							<div class="tab" id="tab-complete"><div>Complete</div></div>
 							<!-- </div> -->
-							<div class="tab add-tab"><div id="new-habit">+add</div></div>
+							<div class="tab add-tab">
+								<button id="new-habit">+add</button>
+							</div>
 						</div>
 						<!-- Search Bar -->
 						<div class="search-container flex">
@@ -103,14 +105,9 @@
 					></i>
 				</div>
 				<div class="modal-body"></div>
-				<div class="modal-footer align-right">
-					<button class="btn" id="close-modal-btn">Close</button>
-					<button
-						class="btn submit-btn"
-						type="submit"
-						form="habit-form"
-						id="submit-btn"
-					>
+				<div class="modal-footer">
+					<button id="close-modal-btn">Close</button>
+					<button class="submit-btn" type="submit" form="habit-form" id="submit-btn">
 						Submit
 					</button>
 				</div>
@@ -141,7 +138,6 @@
 					<div class="inner-circle">
 						<div>
 							<div></div>
-							<span>%</span>
 						</div>
 					</div>
 				</div>

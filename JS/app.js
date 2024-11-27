@@ -218,6 +218,10 @@ export const viewDetails = async (habit) => {
 	modalBody.querySelector('#title').textContent = habit.title;
 	modalBody.querySelector('#perday').textContent = habit.freq.day.per;
 	modalBody.querySelector('#perweek').textContent = habit.freq.week.daysPer;
+
+	modalBody.querySelector('#compToday').textContent = habit.freq.day.complete;
+	modalBody.querySelector('#compWeek').textContent = habit.freq.week.complete;
+	modalBody.querySelector('#compAll').textContent = habit.freq.allTime.complete;
 	// Dates
 	const startDate = new Date(habit.createdAt);
 	modalBody.querySelector('#startdate').textContent =
@@ -227,15 +231,15 @@ export const viewDetails = async (habit) => {
 			day: 'numeric',
 		});
 
-	const weekDate = new Date(habit.freq.week.date);
-	modalBody.querySelector('#thisweek').textContent = weekDate.toLocaleDateString(
-		'en-US',
-		{
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric',
-		}
-	);
+	// const weekDate = new Date(habit.freq.week.date);
+	// modalBody.querySelector('#thisweek').textContent = weekDate.toLocaleDateString(
+	// 	'en-US',
+	// 	{
+	// 		year: 'numeric',
+	// 		month: 'long',
+	// 		day: 'numeric',
+	// 	}
+	// );
 
 	// Modal Footer
 	cancelBtn.innerHTML = 'Close';
@@ -306,15 +310,15 @@ export const openSettings = () => {
 	const modalBody = modal.querySelector('.modal-body');
 	modalBody.innerHTML = `
 	<div class="sett-menu">
-		<div class="flex spbt">
+		<div class="form-group sett-g">
 			<p>Change Theme</p>
 			<button id="theme-btn" class="theme-toggle-button">Theme</button>
 		</div>
-		<div class="flex spbt">
+		<div class="form-group sett-g">
 			<p>Change Date</p>
 			<input type="datetime-local" id="test-date" />
 		</div>
-		<div class="flex spbt">
+		<div class="form-group sett-g">
 			<p>Clear All Data</p>
 			<button id="clear-data">Clear Data</button>
 		</div>

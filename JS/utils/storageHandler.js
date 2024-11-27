@@ -54,50 +54,6 @@ export const deleteHabit = async (id) => {
 	renderHabits();
 };
 
-export const checkOff = async (habit) => {
-	const cardCont = document.querySelector(`.card-container#${habit.id}`);
-	cardCont.classList.add('active');
-
-	const habits = await fetchHabits();
-	const newHabits = habits.map((el) => {
-		if (el.id === habit.id) {
-			let dayComplete = el.freq.day.complete + 1;
-			let weekComplete = el.freq.week.complete + 1;
-
-			cardCont.querySelector(
-				'.habit-per-day'
-			).textContent = `${dayComplete} / ${el.freq.day.per}`;
-			const progressBar = cardCont.querySelector('.progress-bar');
-			const progressValue = Math.min(100, (weekComplete / el.freq.week.per) * 100);
-			progressBar.style.background = getProgressColor(progressValue, true);
-
-			// Check Message
-			cardCont.querySelector('.message-cont h2').textContent = '+1';
-			cardCont.querySelector('.message-cont').classList.add('active');
-
-			const newH = {
-				...el,
-				freq: {
-					...el.freq,
-					day: { ...el.freq.day, complete: dayComplete },
-					week: {
-						...el.freq.week,
-						complete: weekComplete,
-					},
-				},
-			};
-			return newH;
-		} else {
-			return el;
-		}
-	});
-
-	saveHabits(newHabits);
-	setTimeout(() => {
-		renderHabits();
-	}, 1000);
-};
-
 // Check habits for dates daily / weekly
 const resetDailyProgress = (habits, thisDay) =>
 	habits.map((habit) =>

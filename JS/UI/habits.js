@@ -1,19 +1,21 @@
 import { viewDetails } from '../app.js';
 import { addElement, getProgressColor } from '../utils/helpers.js';
-import { checkOff, fetchHabits } from '../utils/storageHandler.js';
+import { fetchHabits, saveHabits } from '../utils/storageHandler.js';
 import renderStats from './stats.js';
 
 let ignore = false;
 
-const sortHabits = (habits) => {
-	return habits.sort((a, b) => a.freq.day.complete - b.freq.day.complete);
-};
+// const sortHabits = (habits) => {
+// 	return habits.sort((a, b) => a.freq.day.complete - b.freq.day.complete);
+// };
 
 const cardElement = (habit) => {
 	// get template and clone
 	const template = document.getElementById('habit-card-template');
 	const container = template.content.cloneNode(true);
-	container.querySelector('.card-container').id = `${habit.id}`;
+	container
+		.querySelector('.card-container')
+		.setAttribute('data-id', `${habit.id}`);
 	let dayComplete = habit.freq.day.complete;
 	let weekComplete = habit.freq.week.complete;
 
@@ -37,20 +39,73 @@ const cardElement = (habit) => {
 	progressBar.style.background = getProgressColor(progressValue, true);
 	progressBar.style.borderColor = 'green';
 
-	//document.documentElement.style.setProperty('--progress', progressValue);
-
 	// checkmark
 	const checkmark = container.querySelector('.check-button');
 	// const checkmark = container.querySelector('.icon-button');
-
-	setTimeout(() => {
-		checkmark.addEventListener('click', () => {
-			checkmark.disabled = 'true';
-			checkOff(habit);
-		});
-	}, 300);
+	checkmark.addEventListener('click', () => {
+		console.log('click');
+		checkOff(habit.id);
+		// checkmark.disabled = 'true';
+		// setTimeout(() => {
+		// 	checkmark.removeAttribute('disabled');
+		// }, 200);
+	});
 
 	return container;
+};
+
+/** Check Off Habit */
+const checkOff = async (habitId) => {
+	console.log('checkoff', habitId);
+
+	const cardCont = document.querySelector(`.card-container[data-id=${habitId}]`);
+
+	const habits = await fetchHabits();
+	//
+
+	// Check Message
+	const msgCont = cardCont.querySelector('.message-cont');
+	msgCont.style.color = 'green';
+	msgCont.querySelector('h2').textContent = '+1';
+
+	msgCont.classList.add('checkoff');
+
+	setTimeout(() => {
+		msgCont.classList.remove('checkoff');
+	}, 200);
+	renderStats();
+
+	const newHabits = habits.map((el) => {
+		if (el.id === habitId) {
+			let dayComplete = el.freq.day.complete + 1;
+			let weekComplete = el.freq.week.complete + 1;
+
+			cardCont.querySelector(
+				'.habit-per-day'
+			).textContent = `${dayComplete} / ${el.freq.day.per}`;
+			const progressBar = cardCont.querySelector('.progress-bar');
+			const progressValue = Math.min(100, (weekComplete / el.freq.week.per) * 100);
+			progressBar.style.background = getProgressColor(progressValue, true);
+
+			return {
+				...el,
+				freq: {
+					...el.freq,
+					day: { ...el.freq.day, complete: dayComplete },
+					week: {
+						...el.freq.week,
+						complete: weekComplete,
+					},
+				},
+			};
+		} else {
+			return el;
+		}
+	});
+
+	console.log('Checkoff Saving Habits', newHabits);
+	saveHabits(newHabits);
+	return newHabits;
 };
 
 /** Render Habits */
@@ -102,15 +157,16 @@ export const renderHabits = async () => {
 		}
 	}
 
+	// todo
 	// Sort habits by least daily completed
-	habits = sortHabits(habits);
+	//habits = sortHabits(habits);
 
 	// Create habit card and append to DOM
 	habits.forEach((habit) => {
 		list.appendChild(cardElement(habit));
 	});
-
 	habitList.appendChild(list);
+
 	setTimeout(() => {
 		list.classList.add('visible');
 	}, 50);
