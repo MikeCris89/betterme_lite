@@ -187,7 +187,7 @@ input::placeholder {
 }
 
 /**/
-.theme-toggle-button {
+button.theme-toggle-button {
   padding: 10px 20px;
   background-color: var(--button-bg-color);
   color: var(--button-text-color);
@@ -195,7 +195,7 @@ input::placeholder {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.theme-toggle-button:hover {
+button.theme-toggle-button:hover {
   opacity: 0.8;
 }
 
@@ -223,6 +223,7 @@ input::placeholder {
   flex-direction: column;
   gap: 10px;
 }
+
 .modal-header {
   height: 100%;
   flex: 0;
@@ -253,14 +254,14 @@ input::placeholder {
 }
 
 .sett-menu {
-  height: 100%;
-  width: 100%;
   margin: auto;
-  padding: 10px 5px;
+  padding: 15px 10px 50px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   gap: 20px;
+  z-index: 1000;
 }
 .sett-menu #test-date {
   font-size: 12px;
@@ -314,6 +315,10 @@ input::placeholder {
 
 .spar {
   justify-content: space-around;
+}
+
+.fl-end {
+  justify-content: flex-end;
 }
 
 .nowrap {

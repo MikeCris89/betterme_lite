@@ -1,5 +1,5 @@
 import { weeklyStats } from '../utils/helpers.js';
-import { fetchHabits } from '../utils/storageHandler.js';
+import { fetchHabits } from '../ui/habits.js';
 
 let ignore = false;
 

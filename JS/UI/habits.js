@@ -1,9 +1,10 @@
 import { viewDetails } from '../app.js';
 import { addElement, getProgressColor } from '../utils/helpers.js';
-import { fetchHabits, saveHabits } from '../utils/storageHandler.js';
+import { saveData, getData } from '../utils/api.js';
 import renderStats from './stats.js';
 
 let ignore = false;
+let allHabits = null;
 
 // const sortHabits = (habits) => {
 // 	return habits.sort((a, b) => a.freq.day.complete - b.freq.day.complete);
@@ -52,60 +53,6 @@ const cardElement = (habit) => {
 	});
 
 	return container;
-};
-
-/** Check Off Habit */
-const checkOff = async (habitId) => {
-	console.log('checkoff', habitId);
-
-	const cardCont = document.querySelector(`.card-container[data-id=${habitId}]`);
-
-	const habits = await fetchHabits();
-	//
-
-	// Check Message
-	const msgCont = cardCont.querySelector('.message-cont');
-	msgCont.style.color = 'green';
-	msgCont.querySelector('h2').textContent = '+1';
-
-	msgCont.classList.add('checkoff');
-
-	setTimeout(() => {
-		msgCont.classList.remove('checkoff');
-	}, 200);
-	renderStats();
-
-	const newHabits = habits.map((el) => {
-		if (el.id === habitId) {
-			let dayComplete = el.freq.day.complete + 1;
-			let weekComplete = el.freq.week.complete + 1;
-
-			cardCont.querySelector(
-				'.habit-per-day'
-			).textContent = `${dayComplete} / ${el.freq.day.per}`;
-			const progressBar = cardCont.querySelector('.progress-bar');
-			const progressValue = Math.min(100, (weekComplete / el.freq.week.per) * 100);
-			progressBar.style.background = getProgressColor(progressValue, true);
-
-			return {
-				...el,
-				freq: {
-					...el.freq,
-					day: { ...el.freq.day, complete: dayComplete },
-					week: {
-						...el.freq.week,
-						complete: weekComplete,
-					},
-				},
-			};
-		} else {
-			return el;
-		}
-	});
-
-	console.log('Checkoff Saving Habits', newHabits);
-	saveHabits(newHabits);
-	return newHabits;
 };
 
 /** Render Habits */
@@ -174,9 +121,99 @@ export const renderHabits = async () => {
 	ignore = false;
 };
 
-/**Search Bar */
-export const openSearch = () => {
-	const searchCont = document.querySelector('.search-container');
-	searchCont.classList.add('visible');
-	document.getElementById('search-tab').classList.add('active');
+/** Check Off Habit */
+const checkOff = async (habitId) => {
+	console.log('checkoff', habitId);
+
+	const cardCont = document.querySelector(`.card-container[data-id=${habitId}]`);
+
+	const habits = await fetchHabits();
+	//
+
+	// Check Message
+	const msgCont = cardCont.querySelector('.message-cont');
+	msgCont.style.color = 'green';
+	msgCont.querySelector('h2').textContent = '+1';
+
+	msgCont.classList.add('checkoff');
+
+	setTimeout(() => {
+		msgCont.classList.remove('checkoff');
+	}, 200);
+	renderStats();
+
+	const newHabits = habits.map((el) => {
+		if (el.id === habitId) {
+			let dayComplete = el.freq.day.complete + 1;
+			let weekComplete = el.freq.week.complete + 1;
+
+			cardCont.querySelector(
+				'.habit-per-day'
+			).textContent = `${dayComplete} / ${el.freq.day.per}`;
+			const progressBar = cardCont.querySelector('.progress-bar');
+			const progressValue = Math.min(100, (weekComplete / el.freq.week.per) * 100);
+			progressBar.style.background = getProgressColor(progressValue, true);
+
+			return {
+				...el,
+				freq: {
+					...el.freq,
+					day: { ...el.freq.day, complete: dayComplete },
+					week: {
+						...el.freq.week,
+						complete: weekComplete,
+					},
+				},
+			};
+		} else {
+			return el;
+		}
+	});
+
+	console.log('Checkoff Saving Habits', newHabits);
+	saveHabits(newHabits);
+	return newHabits;
+};
+
+export const fetchHabits = async () => {
+	if (allHabits) return allHabits;
+
+	console.log('Fetching from local storage.');
+	try {
+		allHabits = getData('habits').then((resp) => {
+			const data = resp || [];
+			if (data.length > 0) {
+				//const newData = data.map((el) => ({...el, el.freq.day.per : Number(el.freq.day.per)}))
+			}
+			allHabits = data;
+			return data;
+		});
+		return allHabits;
+	} catch (e) {
+		console.error('Fetch Habits Error:', e);
+		return [];
+	}
+};
+
+export const saveHabits = async (habitArr) => {
+	try {
+		allHabits = habitArr;
+		await saveData('habits', habitArr);
+		console.log('Habits saved.');
+	} catch (e) {
+		console.error('Error saving habits. Error: ', e.message);
+	}
+};
+
+export const deleteHabit = async (id) => {
+	const habits = await fetchHabits();
+	const newHabits = habits.filter((habit) => habit.id !== id);
+	await saveHabits(newHabits);
+	console.log('Habit Deleted.');
+	renderHabits();
+};
+
+export const clearAllHabits = () => {
+	allHabits = null;
+	renderHabits();
 };

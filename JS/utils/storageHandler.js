@@ -1,57 +1,14 @@
-import { renderHabits } from '../UI/habits.js';
+import { fetchHabits, renderHabits, saveHabits } from '../UI/habits.js';
 import { clearAllData, getData, saveData } from './api.js';
-import { getProgressColor, thisWeekStart, today } from './helpers.js';
-
-let allHabits = null;
-
-export const fetchHabits = async () => {
-	if (allHabits) return allHabits;
-
-	console.log('Fetching from local storage.');
-	try {
-		allHabits = getData('habits').then((resp) => {
-			const data = resp || [];
-			if (data.length > 0) {
-				//const newData = data.map((el) => ({...el, el.freq.day.per : Number(el.freq.day.per)}))
-			}
-			allHabits = data;
-			return data;
-		});
-		return allHabits;
-	} catch (e) {
-		console.error('Fetch Habits Error:', e);
-		return [];
-	}
-};
-
-export const saveHabits = async (habitArr) => {
-	try {
-		allHabits = habitArr;
-		await saveData('habits', habitArr);
-		console.log('Habits saved.');
-	} catch (e) {
-		console.error('Error saving habits. Error: ', e.message);
-	}
-};
+import { thisWeekStart, today } from './helpers.js';
 
 export const clearData = async () => {
 	try {
-		allHabits = null;
-		renderHabits();
-
 		await clearAllData();
 		console.log('data cleared');
 	} catch (e) {
 		console.error('Error clearing data. Error: ', e.message);
 	}
-};
-
-export const deleteHabit = async (id) => {
-	const habits = await fetchHabits();
-	const newHabits = habits.filter((habit) => habit.id !== id);
-	await saveHabits(newHabits);
-	console.log('Habit Deleted.');
-	renderHabits();
 };
 
 // Check habits for dates daily / weekly
@@ -126,7 +83,7 @@ export const checkDates = async () => {
 				dates = setDates(thisDay, thisWeek);
 				saveData('dates', dates);
 				console.log('Dates Modified');
-				await saveHabits(resp);
+				saveHabits(resp);
 				renderHabits();
 			});
 		}

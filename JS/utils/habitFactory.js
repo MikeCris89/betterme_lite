@@ -1,5 +1,5 @@
 import { thisWeekStart, today } from './helpers.js';
-import { fetchHabits } from './storageHandler.js';
+import { fetchHabits } from '../UI/habits.js';
 
 const habitFactory = async ({ title, perDay, daysPerWeek }) => {
 	// const perday = Number(perDay);
